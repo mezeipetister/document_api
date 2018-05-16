@@ -2,8 +2,6 @@ package db
 
 import (
 	model "Projects/document_api/src/model"
-	"encoding/json"
-	"fmt"
 	"log"
 
 	mgo "gopkg.in/mgo.v2"
@@ -28,14 +26,13 @@ func (d *DAO) Connect() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("Connected")
 	db = session.DB(d.Database)
 }
 
 // Insert a document to database
 func (d *DAO) Insert(document *model.Document) error {
-	b, _ := json.Marshal(document)
-	println(string(b))
+	// b, _ := json.Marshal(document)
+	// println(string(b))
 	err := db.C(d.Collection).Insert(&document)
 	return err
 }
