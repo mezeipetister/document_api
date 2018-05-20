@@ -8,4 +8,5 @@ type Database interface {
 	RemoveById(collection string, ID bson.ObjectId) error
 	Find(collection string, i bson.M) interface{}
 	FindAll()
+	Close()
 }

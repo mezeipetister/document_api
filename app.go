@@ -1,25 +1,28 @@
 package main
 
 import (
-	services "Projects/document_api/src/services"
-
 	"fmt"
+	"log"
 
-	"gopkg.in/mgo.v2/bson"
+	"net/http"
+
+	"github.com/julienschmidt/httprouter"
+
+	dbService "Projects/document_api/services/database"
+
+	controllers "Projects/document_api/controllers"
 )
 
 func main() {
-	db := services.NewDB("localhost", "DEMO")
 
-	// d1 := &models.Document{
-	// 	ID:   bson.NewObjectId(),
-	// 	Name: "Mizu? :)",
-	// }
+	db, err := dbService.New("localhost", "DEMO")
+	defer db.CloseSession()
 
-	// db.Save("demoi", &d1)
+	if err != nil {
+		fmt.Println(err)
+	}
 
-	// db.RemoveById("demoi", bson.ObjectIdHex("5afca055d57dd37b39830a0f"))
-
-	result := db.Find("demoi", bson.M{"name": "Mizu?"})
-	fmt.Println(result)
+	router := httprouter.New()
+	router.GET("/", controllers.Info)
+	log.Fatal(http.ListenAndServe(":8080", router))
 }

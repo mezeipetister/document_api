@@ -42,6 +42,10 @@ func (d db) FindAll() {
 	// Do something
 }
 
+func (d db) Close() {
+	d.db.Session.Close()
+}
+
 // NewDB return new database layer
 func NewDB(serverAddr, dbName string) interfaces.Database {
 	session, err := mgo.Dial(serverAddr)
