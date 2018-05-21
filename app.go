@@ -2,7 +2,6 @@ package main
 
 import (
 	serviceDB "document_api/services/database"
-	serviceUser "document_api/services/user"
 	"fmt"
 )
 
@@ -13,8 +12,6 @@ func main() {
 	if err != nil {
 		fmt.Println(err)
 	}
-
-	u1, err := serviceUser.New(&db)
 
 	// db, err := dbService.New("localhost", "DEMO")
 	// defer db.CloseSession()

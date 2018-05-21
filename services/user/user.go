@@ -3,30 +3,32 @@ package user
 import dbService "document_api/services/database"
 
 // New : create and return a new user
-func New(db *dbService.Interface) (*Model, error) {
-	return &Model{datastore: *db}, nil
+func New(db *dbService.Model) (*Model, error) {
+	return &Model{Datastore: *db}, nil
 }
 
 // Save the current user document to database
 func (u *Model) Save() error {
+	u.Datastore.Session.DB(
+		u.Datastore.DBName).C(
+		u.Datastore.Collection).Insert(u.Document)
 	return nil
 }
 
 // Remove the current user document from database
 func (u *Model) Remove() error {
-	// err := u.db.dbSession.Session.DB(u.db.dbName).C(u.db.collection).Insert()
 	return nil
 }
 
 // Get back the current user document
-func (u *Model) Get() (*user, error) {
+func (u *Model) Get() (*User, error) {
 	// err := u.db.dbSession.Session.DB(u.db.dbName).C(u.db.collection).Insert()
-	return &u.document, nil
+	return &u.Document, nil
 }
 
 // Set a new user document to the current user object
-func (u *Model) Set(userDocument *user) error {
-	u.document = *userDocument
+func (u *Model) Set(userDocument *User) error {
+	u.Document = *userDocument
 	return nil
 }
 

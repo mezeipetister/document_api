@@ -9,7 +9,7 @@ func New(serverAddress, dbName, collection string) (Interface, error) {
 	session, err := mgo.Dial(serverAddress)
 	defer session.Close()
 	if err != nil {
-		return Model{}, err
+		return &Model{}, err
 	}
 	return &Model{
 		session.Copy(),
@@ -18,6 +18,6 @@ func New(serverAddress, dbName, collection string) (Interface, error) {
 }
 
 // CloseSession close MGO active session.
-func (db Model) CloseSession() {
+func (db *Model) CloseSession() {
 	db.Session.Close()
 }
