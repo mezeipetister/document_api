@@ -8,8 +8,8 @@ import (
 
 // Model represents a user document + datastore
 type Model struct {
-	Document  User
-	Datastore dbService.Model
+	document  User
+	datastore dbService.Interface
 }
 
 // User model

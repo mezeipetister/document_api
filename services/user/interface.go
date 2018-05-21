@@ -4,7 +4,7 @@ package user
 type Interface interface {
 	Save() error
 	Remove() error
-	Get() (User, error)
-	Set(User) error
+	Get() User
+	Set(User)
 	ResetPassword() (string, error)
 }

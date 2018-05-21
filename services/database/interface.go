@@ -1,6 +1,10 @@
 package database
 
-// Database interface : basic database driver is mgo.v2
+import "gopkg.in/mgo.v2/bson"
+
+// Interface : basic database driver is mgo.v2
 type Interface interface {
-	CloseSession()
+	CloseSession() error
+	CollectionInsert(i interface{}) error
+	RemoveDocumentById(documentId bson.ObjectId)
 }

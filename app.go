@@ -2,7 +2,10 @@ package main
 
 import (
 	serviceDB "document_api/services/database"
+	serviceUser "document_api/services/user"
 	"fmt"
+
+	"gopkg.in/mgo.v2/bson"
 )
 
 func main() {
@@ -13,12 +16,13 @@ func main() {
 		fmt.Println(err)
 	}
 
-	// db, err := dbService.New("localhost", "DEMO")
-	// defer db.CloseSession()
-
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
+	u1, err := serviceUser.New(db)
+	u1.Set(&serviceUser.User{
+		ID:    bson.NewObjectId(),
+		Email: "mezeipetister@gmail.com",
+	})
+	u1.Save()
+	u1.Remove()
 
 	// router := httprouter.New()
 	// router.GET("/", controllers.Info)
