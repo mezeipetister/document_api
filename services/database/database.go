@@ -18,9 +18,20 @@ func New(serverAddress, dbName, collection string) (Interface, error) {
 		collection}, nil
 }
 
+// GetSession ...
+func (db Model) GetSession() *mgo.Session {
+	return db.session
+}
+
 // CloseSession close MGO active session.
 func (db Model) CloseSession() error {
 	db.session.Close()
+	return nil
+}
+
+// FindOne ...
+func (db Model) FindOne(q bson.M, resObj interface{}) error {
+	db.session.DB(db.dbName).C(db.collection).Find(q).One(resObj)
 	return nil
 }
 

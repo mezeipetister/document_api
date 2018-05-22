@@ -15,6 +15,7 @@ type Model struct {
 // User model
 type User struct {
 	ID       bson.ObjectId `bson:"_id" json:"_id"`
+	Username string        `bson:"username" json:"username"`
 	FName    string        `bson:"fname" json:"fname"`
 	LName    string        `bson:"lname" json:"lname"`
 	Email    string        `bson:"email" json:"email"`

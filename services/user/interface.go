@@ -6,5 +6,10 @@ type Interface interface {
 	Remove() error
 	Get() User
 	Set(User)
-	ResetPassword() (string, error)
+	SetFName(string)
+	SetLName(string)
+	SetEmail(string)
+	SetPassword(string) error
+	ResetPassword() string
+	Login(string, string) (bool, error)
 }
