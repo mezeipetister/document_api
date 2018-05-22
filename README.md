@@ -4,6 +4,10 @@ Install dependencies:
 
 `go install ./..`
 
-Run: go run app.go
+Run:
 
-Build: go build
+`go run app.go`
+
+Build:
+
+`go build`
