@@ -1,6 +1,8 @@
 # document_api
 
-Install dependencies: go install ./..
+Install dependencies:
+
+go install ./..
 
 Run: go run app.go
 
