@@ -22,7 +22,7 @@ func main() {
 		Email: "mezeipetister@gmail.com",
 	})
 	u1.Save()
-	u1.Remove()
+	// u1.Remove()
 
 	// router := httprouter.New()
 	// router.GET("/", controllers.Info)
