@@ -1,5 +1,9 @@
 # document_api
 
+*Note*
+
+Place the project folder into your GOPATH root.
+
 Install dependencies:
 
 `go install ./..`
