@@ -2,7 +2,7 @@
 
 Install dependencies:
 
-go install ./..
+`go install ./..`
 
 Run: go run app.go
 
