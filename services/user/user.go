@@ -2,6 +2,9 @@ package user
 
 import (
 	dbService "document_api/services/database"
+	"errors"
+
+	"gopkg.in/mgo.v2/bson"
 )
 
 // New : create and return a new user
@@ -10,24 +13,16 @@ func New(db *dbService.Interface) (Model, error) {
 }
 
 // Login ...
-func (u *Model) Login(username, password string) (bool, error) {
+func (u *Model) Login(username, password string) (string, error) {
 	// TODO change it!!! Just for testing purpose!!!!!!
+	res := User{}
+	u.datastore.GetSession().DB("DEMO").C("doc1").Find(bson.M{"username": "mezeipetister"}).One(&res)
 
-	// res := User{}
-	// u.datastore.GetSession().DB("DEMO").C("doc1").Find(bson.M{"username": "mezeipetister"}).One(&res)
-
-	// u.datastore.FindOne(bson.M{"username": "mezeipetister"}, &res)
-	// fmt.Println(res.Username)
-
-	// TODO: Its too slow!
-	// result := checkPasswordHash(password, res.Password)
-	// result := false
-	// start := time.Now()
-	// hash, _ := hashPassword(password)
-	// finish := time.Now()
-	// result = hash == res.Password
-	// fmt.Println(finish.Sub(start))
-	return true, nil
+	u.datastore.FindOne(bson.M{"username": username}, &res)
+	if checkPasswordHash(password, res.Password) {
+		return res.ID.Hex(), nil
+	}
+	return "", errors.New("Authentication error")
 }
 
 // Save the current user document to database

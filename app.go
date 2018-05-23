@@ -16,7 +16,8 @@ func main() {
 
 	router := httprouter.New()
 	router.GET("/", controllers.Info)
-	router.GET("/createuser/:username", controllers.CreateUser)
+	router.GET("/user/createuser/:username", controllers.CreateUser)
+	router.POST("/user/login", controllers.Login)
 	router.GET("/getcookie", controllers.GetCookie)
 	router.GET("/setcookie", controllers.SetCookie)
 	log.Fatal(http.ListenAndServe(":8080", router))

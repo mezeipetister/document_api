@@ -11,5 +11,5 @@ type Interface interface {
 	SetEmail(string)
 	SetPassword(string) error
 	ResetPassword() string
-	Login(string, string) (bool, error)
+	Login(string, string) (string, error)
 }
