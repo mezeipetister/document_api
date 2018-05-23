@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"net/http"
 
-	jwt "github.com/dgrijalva/jwt-go"
-
 	"github.com/julienschmidt/httprouter"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -26,13 +24,13 @@ func CreateUser(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 
 	u1.Set(&serviceUser.User{
 		ID:       bson.NewObjectId(),
-		Email:    "mezeipetister@gmail.com",
-		Username: p.ByName("username"),
-		LName:    "Mezei",
-		FName:    "Péter",
+		Email:    r.PostFormValue("email"),
+		Username: r.PostFormValue("username"),
+		LName:    r.PostFormValue("lname"),
+		FName:    r.PostFormValue("fname"),
 	})
 
-	u1.SetPassword("HelloBello")
+	u1.SetPassword(r.PostFormValue("password"))
 
 	error := u1.Save()
 	if error != nil {
@@ -57,14 +55,12 @@ func Login(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 	u1, _ := serviceUser.New(&db)
 	UID, err := u1.Login(r.PostFormValue("username"), r.PostFormValue("password"))
 	if err == nil {
-		token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-			"UID": UID,
-		})
-		tokenString, errJWT := token.SignedString([]byte("HelloBello"))
-		if errJWT != nil {
-			fmt.Println(errJWT)
-		}
-		fmt.Fprint(w, tokenString)
+		token := createToken(UID, "Admin")
+		// _, r := ValidateToken(token)
+		// for k, v := range r {
+		// 	fmt.Println(k + ": " + v.(string))
+		// }
+		fmt.Fprint(w, token)
 		return
 	}
 	fmt.Fprint(w, err)
