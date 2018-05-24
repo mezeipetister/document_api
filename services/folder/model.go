@@ -1,4 +1,4 @@
-package models
+package folder
 
 // Folder model
 type Folder struct {
