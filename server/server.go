@@ -20,29 +20,4 @@
  * via github.com
  */
 
-package main
-
-import (
-	"encoding/json"
-	"io/ioutil"
-)
-
-// Config
-var configuration config
-
-// config members are exported
-// because this way the JSON parser can
-// manage the parsing.
-type config struct {
-	Server string
-	Port   int
-}
-
-// return the read configs
-func getConfig() {
-	file, _ := ioutil.ReadFile("./config.json")
-	err := json.Unmarshal(file, &configuration)
-	if err != nil {
-		panic("Oo error occured while config file parsed.")
-	}
-}
+package server
