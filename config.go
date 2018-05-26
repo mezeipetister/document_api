@@ -51,9 +51,11 @@ func getConfig() {
 		}, "", "    ") // no prefix, but 4 spaces indent
 		ioutil.WriteFile(configFileName, content, 0755)
 	}
-	file, err := ioutil.ReadFile(configFileName)
-	err = json.Unmarshal(file, &configuration)
-	if err != nil {
-		panic("Oo error occured while config file parsed.")
+
+	if file, err := ioutil.ReadFile(configFileName); err == nil {
+		err = json.Unmarshal(file, &configuration)
+		return
 	}
+
+	panic("Oo. An error occured while config file parsed.")
 }
