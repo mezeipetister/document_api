@@ -30,3 +30,6 @@ else
     echo -e "${RED}Error${NOCOLOR} while moving application to /bin folder."
     exit 1
 fi
+
+# Run application
+./bin/app

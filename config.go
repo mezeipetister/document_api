@@ -45,8 +45,10 @@ type config struct {
 // return the read configs
 func getConfig() {
 	if _, err := os.Stat(configFileName); os.IsNotExist(err) {
-		content, _ := json.MarshalIndent(
-			&config{"localhost", 8080}, "", "    ")
+		content, _ := json.MarshalIndent(&config{
+			Server: "localhost",
+			Port:   8080,
+		}, "", "    ") // no prefix, but 4 spaces indent
 		ioutil.WriteFile(configFileName, content, 0755)
 	}
 	file, err := ioutil.ReadFile(configFileName)
