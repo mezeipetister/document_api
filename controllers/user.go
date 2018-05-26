@@ -1,10 +1,11 @@
 package controllers
 
 import (
-	serviceDB "document_api/services/database"
-	serviceUser "document_api/services/user"
 	"fmt"
 	"net/http"
+
+	serviceDB "github.com/mezeipetister/document_api/database"
+	serviceUser "github.com/mezeipetister/document_api/user"
 
 	"github.com/julienschmidt/httprouter"
 	"gopkg.in/mgo.v2/bson"

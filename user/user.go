@@ -1,11 +1,42 @@
 package user
 
 import (
-	dbService "document_api/services/database"
 	"errors"
+
+	dbService "github.com/mezeipetister/document_api/database"
 
 	"gopkg.in/mgo.v2/bson"
 )
+
+// Model represents a user document + datastore
+type Model struct {
+	document  User
+	datastore dbService.Interface
+}
+
+// User model
+type User struct {
+	ID       bson.ObjectId `bson:"_id" json:"_id"`
+	Username string        `bson:"username" json:"username"`
+	FName    string        `bson:"fname" json:"fname"`
+	LName    string        `bson:"lname" json:"lname"`
+	Email    string        `bson:"email" json:"email"`
+	Password string        `bson:"password" json:"password"`
+}
+
+// Interface : User Interface
+type Interface interface {
+	Save() error
+	Remove() error
+	Get() User
+	Set(User)
+	SetFName(string)
+	SetLName(string)
+	SetEmail(string)
+	SetPassword(string) error
+	ResetPassword() string
+	Login(string, string) (string, error)
+}
 
 // New : create and return a new user
 func New(db *dbService.Interface) (Model, error) {
@@ -78,20 +109,3 @@ func (u *Model) ResetPassword() string {
 	// TODO
 	return ""
 }
-
-// // GetByID : get a user by a given ID
-// func GetByID(id string) (User, error) {
-// 	return make(User), nil
-// }
-
-// // SearchByName : search user by given name
-// func SearchByName(name string) ([]User, error) {
-// 	return []User{}, nil
-// }
-
-// // SearchByEmail : search user by given email address
-// func SearchByEmail(email string) ([]User, error) {
-// 	return []User{}, nil
-// }
-
-// Helo Bello
