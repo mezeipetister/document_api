@@ -32,5 +32,5 @@ func init() {
 
 func main() {
 	// TODO: server + router + logging + error handling
-	fmt.Println(configuration.Server)
+	fmt.Println(configuration.ServerAddress)
 }

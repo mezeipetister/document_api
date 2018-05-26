@@ -38,8 +38,10 @@ var configuration config
 // because this way the JSON parser can
 // manage the parsing.
 type config struct {
-	Server string `json:"server"`
-	Port   int    `json:"port"`
+	ServerAddress   string `json:"server_address"`
+	ServerPort      int    `json:"server_port"`
+	DBServerAddress string `json:"db_server_address"`
+	DBServerPort    int    `json:"db_server_port"`
 }
 
 // return the read configs
@@ -50,10 +52,14 @@ func getConfig() {
 	if _, err := os.Stat(configFileName); os.IsNotExist(err) {
 
 		// Create default values.
-		content, _ := json.MarshalIndent(&config{
-			Server: "localhost",
-			Port:   8080,
-		}, "", "    ") // no prefix, but 4 spaces indent
+		content, _ := json.MarshalIndent(
+			&config{
+				ServerAddress:   "localhost",
+				ServerPort:      8080,
+				DBServerAddress: "localhost",
+				DBServerPort:    0,
+			},
+			"", "    ") // no prefix, but 4 spaces indent
 
 		// Write default vaules to the new config file.
 		ioutil.WriteFile(configFileName, content, 0755)
