@@ -32,7 +32,7 @@ import (
 const configFileName string = "config.json"
 
 // Config
-var configuration config
+var configuration *config
 
 // config members are exported
 // because this way the JSON parser can

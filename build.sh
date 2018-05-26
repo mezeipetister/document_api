@@ -16,6 +16,14 @@ else
     exit 1
 fi
 
+# Run tests and check the results
+if [[ $(go test -v) = *"FAIL"* ]]; then
+    echo -e "${RED}Test fails${NOCOLOR}"
+    exit 1
+else
+    echo -e "${GREEN}All tests passed.${NOCOLOR}"
+fi
+
 # Check for bin directory.
 if [ ! -d "bin" ]; then
     # Create bin directory once its missing.
