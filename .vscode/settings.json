@@ -1,0 +1,49 @@
+{
+    "git.enableSmartCommit": true,
+    "git.autofetch": true,
+    "go.inferGopath": true,
+    "window.zoomLevel": 0,
+    "fileHeaderComment.parameter": {
+        "*": {
+            "commentbegin": "/*",
+			"commentprefix": " *",
+			"commentend": " */",
+            "company": "Peter Mezei",
+            "license_AGPLv3.0": [
+            "This program is free software: you can redistribute it and/or modify",
+            " it under the terms of the GNU Affero General Public License as published",
+            " by the Free Software Foundation, either version 3 of the License.",
+            "",
+            " This program is distributed in the hope that it will be useful,",
+            " but WITHOUT ANY WARRANTY; without even the implied warranty of",
+            " MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the",
+            " GNU Affero General Public License for more details.",
+            "",
+            " You should have received a copy of the GNU Affero General Public License",
+            " along with this program.  If not, see <http://www.gnu.org/licenses/>"
+            ]
+        }
+    },
+    "fileHeaderComment.template": {
+        "*":[
+			"${commentbegin}",
+			"${commentprefix} Created on ${date}",
+            "${commentprefix} Copyright (c) ${year} ${company}",
+            "${commentprefix}",
+            "${commentprefix} License AGPL v3.0",
+            "${commentprefix}",
+            "${commentprefix} ${license_AGPLv3.0}",
+            "${commentprefix}",
+            "${commentprefix} For more information please contact me",
+            "${commentprefix} via github.com",
+			"${commentend}"
+		]
+    },
+    "editor.rulers": [
+        79,
+        120
+    ],
+    "editor.tabSize": 4,
+    "editor.detectIndentation": true,
+    "editor.autoIndent": true,
+}
