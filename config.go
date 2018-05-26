@@ -25,7 +25,11 @@ package main
 import (
 	"encoding/json"
 	"io/ioutil"
+	"os"
 )
+
+// Config file name to use (import/export)
+const configFileName string = "config.json"
 
 // Config
 var configuration config
@@ -34,14 +38,19 @@ var configuration config
 // because this way the JSON parser can
 // manage the parsing.
 type config struct {
-	Server string
-	Port   int
+	Server string `json:"server"`
+	Port   int    `json:"port"`
 }
 
 // return the read configs
 func getConfig() {
-	file, _ := ioutil.ReadFile("./config.json")
-	err := json.Unmarshal(file, &configuration)
+	if _, err := os.Stat(configFileName); os.IsNotExist(err) {
+		content, _ := json.MarshalIndent(
+			&config{"localhost", 8080}, "", "    ")
+		ioutil.WriteFile(configFileName, content, 0755)
+	}
+	file, err := ioutil.ReadFile(configFileName)
+	err = json.Unmarshal(file, &configuration)
 	if err != nil {
 		panic("Oo error occured while config file parsed.")
 	}
