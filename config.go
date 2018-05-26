@@ -44,18 +44,28 @@ type config struct {
 
 // return the read configs
 func getConfig() {
+
+	// Check if the config file exists. If not, then create it
+	// with default values.
 	if _, err := os.Stat(configFileName); os.IsNotExist(err) {
+
+		// Create default values.
 		content, _ := json.MarshalIndent(&config{
 			Server: "localhost",
 			Port:   8080,
 		}, "", "    ") // no prefix, but 4 spaces indent
+
+		// Write default vaules to the new config file.
 		ioutil.WriteFile(configFileName, content, 0755)
 	}
 
+	// Read the config file. If no error, then return.
 	if file, err := ioutil.ReadFile(configFileName); err == nil {
 		err = json.Unmarshal(file, &configuration)
 		return
 	}
 
+	// If something went wrong, and the config.json is not readable
+	// then panic.
 	panic("Oo. An error occured while config file parsed.")
 }
