@@ -2,22 +2,23 @@
 
 *Note*
 
-Place the project folder into your GOPATH root.
+Clone the project folder into your **$GOPATH/src**
 
 *Important*
 
 This project is strongly under development process.
-
-Use it just for testing purposes.
+Usage is for just testing purpose
 
 Install dependencies:
 
-`go install ./..`
-
-Run:
-
-`go run app.go`
+`./install.sh`
 
 Build:
 
-`go build`
+`./build.sh`
+
+Run developer mode:
+
+`go run *.go`
+
+**.vscode settings and tasks added**
