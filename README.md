@@ -4,6 +4,12 @@
 
 Place the project folder into your GOPATH root.
 
+*Important*
+
+This project is strongly under development process.
+
+Use it just for testing purposes.
+
 Install dependencies:
 
 `go install ./..`
