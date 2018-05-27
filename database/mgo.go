@@ -26,7 +26,6 @@ import (
 	"errors"
 
 	mgo "gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
 )
 
 const (
@@ -44,10 +43,6 @@ type Interface interface {
 	// It will be removed in the near future.
 	// TODO: Remove it from the next release!
 	GetSession() *mgo.Session
-
-	CollectionInsert(interface{}) error
-	RemoveDocumentByID(documentID bson.ObjectId)
-	FindOne(i bson.M, resObj interface{}) error
 }
 
 // Model struct. Storing database MGO session.
@@ -56,7 +51,7 @@ type model struct {
 }
 
 // New database. Returns a database instanse with MGO Session.
-func New(serverAddress, dbName, collection string) (Interface, error) {
+func New(serverAddress string) (Interface, error) {
 	if session, err := mgo.Dial(serverAddress); err == nil {
 		defer session.Close()
 		return &model{session.Copy()}, nil
@@ -65,26 +60,14 @@ func New(serverAddress, dbName, collection string) (Interface, error) {
 }
 
 // GetSession ...
-// TODO: deprecate this method. Use just built in methods.
+// IMPORTANT: deprecated method. Use just built in methods.
+// TODO: Remove it during the next iteration!
 func (db *model) GetSession() *mgo.Session {
 	return db.session
 }
 
 // CloseSession close MGO active session.
+// As we use pointer *model we close the session at the right place.
 func (db *model) CloseSession() {
 	db.session.Close()
-}
-
-// FindOne ...
-func (db *model) FindOne(q bson.M, resObj interface{}) error {
-	return nil
-}
-
-// CollectionInsert ...
-func (db *model) CollectionInsert(i interface{}) error {
-	return nil
-}
-
-// RemoveDocumentByID ...
-func (db *model) RemoveDocumentByID(documentID bson.ObjectId) {
 }
