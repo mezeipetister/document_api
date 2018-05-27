@@ -1,5 +1,5 @@
 /*
- * Created on Sat May 26 2018
+ * Created on Sun May 27 2018
  * Copyright (c) 2018 Peter Mezei
  *
  * License AGPL v3.0
@@ -20,24 +20,41 @@
  * via github.com
  */
 
-package main
+package dao
 
 import (
-	"fmt"
+	"testing"
 
-	"github.com/mezeipetister/document_api/dao"
+	"gopkg.in/mgo.v2/bson"
 )
 
-func init() {
-	getConfig()
+const (
+	testServer         = "localhost"
+	testDBName         = "DEMO"
+	testCollectionName = "DEMO"
+)
+
+var testDocumentID = bson.NewObjectId()
+
+var testDocumentToInsert = &struct {
+	ID      bson.ObjectId `json:"_id"`
+	Message string        `json:"message"`
+}{
+	ID:      testDocumentID,
+	Message: "Hello World",
 }
 
-func main() {
-
-	// TODO: server + router + logging + error handling
-	if db, err := dao.New(configuration.DBServerAddress); err == nil {
-		defer db.CloseSession()
+func TestDAO(t *testing.T) {
+	if d, err := New(testServer); err != nil {
+		defer d.CloseSession()
+		t.Error("Error while database initialize")
 	}
-	fmt.Println("Hello")
-	fmt.Println(configuration.ServerAddress)
+}
+
+func TestCreateDocument(t *testing.T) {
+	if d, err := New(testServer); err == nil {
+		if err := d.InsertNewDocument(testDBName, testCollectionName, &testDocumentToInsert); err != nil {
+			t.Error("Error while inserting a new document")
+		}
+	}
 }

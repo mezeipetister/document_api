@@ -17,7 +17,7 @@ else
 fi
 
 # Run tests and check the results
-c=$(go test -v)
+c=$(go test ./... -v)
 if [[ $c = *"FAIL"* ]]; then
     echo -e "${RED}Test fails${NOCOLOR}"
     echo "$c"
