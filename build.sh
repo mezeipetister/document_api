@@ -17,8 +17,11 @@ else
 fi
 
 # Run tests and check the results
-if [[ $(go test -v) = *"FAIL"* ]]; then
+c=$(go test -v)
+if [[ $c = *"FAIL"* ]]; then
     echo -e "${RED}Test fails${NOCOLOR}"
+    echo "$c"
+    rm app # Remove built app
     exit 1
 else
     echo -e "${GREEN}All tests passed.${NOCOLOR}"

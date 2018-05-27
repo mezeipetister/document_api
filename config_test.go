@@ -24,11 +24,16 @@ package main
 
 import (
 	"testing"
+	"unsafe"
 )
 
 func TestGetConfig(t *testing.T) {
 	getConfig()
-	if configuration == nil {
+	if unsafe.Sizeof(configuration) == 0 {
 		t.Error("Config file is empty after initialization.")
+	}
+	if (len(configuration.ServerAddress) == 0) ||
+		(configuration.ServerPort == 0) {
+		t.Error("No server address and server port set in configuration file.")
 	}
 }

@@ -28,8 +28,13 @@ import (
 	"os"
 )
 
-// Config file name to use (import/export)
-const configFileName string = "config.json"
+const (
+	// Config file name to use (import/export)
+	configFileName string = "config.json"
+
+	// errorMessagePanic to display once panic occures.
+	errorMsgPanic string = "Oo. An error occured while config file parsed."
+)
 
 // Config
 var configuration *config
@@ -73,5 +78,5 @@ func getConfig() {
 
 	// If something went wrong, and the config.json is not readable
 	// then panic.
-	panic("Oo. An error occured while config file parsed.")
+	panic(errorMsgPanic)
 }

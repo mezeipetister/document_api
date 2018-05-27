@@ -1,4 +1,6 @@
 {
-    "server": "localhost",
-    "port": 8080
+    "server_address": "localhost",
+    "server_port": 8080,
+    "db_server_address": "localhost",
+    "db_server_port": 0
 }
