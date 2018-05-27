@@ -1,5 +1,5 @@
 /*
- * Created on Sat May 26 2018
+ * Created on Sun May 27 2018
  * Copyright (c) 2018 Peter Mezei
  *
  * License AGPL v3.0
@@ -20,23 +20,4 @@
  * via github.com
  */
 
-package main
-
-import (
-	"fmt"
-
-	"github.com/mezeipetister/document_api/database"
-)
-
-func init() {
-	getConfig()
-}
-
-func main() {
-	// TODO: server + router + logging + error handling
-	if _, err := database.New(configuration.DBServerAddress, "DEMO", "d1"); err == nil {
-		fmt.Println("DB OK")
-	}
-	fmt.Println("Hello")
-	fmt.Println(configuration.ServerAddress)
-}
+package database

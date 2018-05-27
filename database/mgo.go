@@ -22,65 +22,69 @@
 
 package database
 
-//
 import (
+	"errors"
+
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
-// Model struct. Storing database MGO session.
-type model struct {
-	session    *mgo.Session
-	dbName     string
-	collection string
-}
+const (
+	// Error message when mgo.Dial(string) fails
+	errorMongoSessionError string = "Error while mgo dial."
+)
 
 // Interface : basic database driver is mgo.v2
 type Interface interface {
-	CloseSession() error
+
+	// Close active database session
+	CloseSession()
+
+	// Deprecated! Do not use it!
+	// It will be removed in the near future.
+	// TODO: Remove it from the next release!
+	GetSession() *mgo.Session
+
 	CollectionInsert(interface{}) error
 	RemoveDocumentByID(documentID bson.ObjectId)
 	FindOne(i bson.M, resObj interface{}) error
-	GetSession() *mgo.Session
+}
+
+// Model struct. Storing database MGO session.
+type model struct {
+	session *mgo.Session
 }
 
 // New database. Returns a database instanse with MGO Session.
 func New(serverAddress, dbName, collection string) (Interface, error) {
-	session, err := mgo.Dial(serverAddress)
-	defer session.Close()
-	if err != nil {
-		return &model{}, err
+	if session, err := mgo.Dial(serverAddress); err == nil {
+		defer session.Close()
+		return &model{session.Copy()}, nil
 	}
-	return &model{
-		session.Copy(),
-		dbName,
-		collection}, nil
+	return &model{}, errors.New(errorMongoSessionError)
 }
 
 // GetSession ...
+// TODO: deprecate this method. Use just built in methods.
 func (db *model) GetSession() *mgo.Session {
 	return db.session
 }
 
 // CloseSession close MGO active session.
-func (db *model) CloseSession() error {
+func (db *model) CloseSession() {
 	db.session.Close()
-	return nil
 }
 
 // FindOne ...
 func (db *model) FindOne(q bson.M, resObj interface{}) error {
-	db.session.DB(db.dbName).C(db.collection).Find(q).One(resObj)
 	return nil
 }
 
 // CollectionInsert ...
 func (db *model) CollectionInsert(i interface{}) error {
-	err := db.session.DB(db.dbName).C(db.collection).Insert(i)
-	return err
+	return nil
 }
 
 // RemoveDocumentByID ...
 func (db *model) RemoveDocumentByID(documentID bson.ObjectId) {
-	db.session.DB(db.dbName).C(db.collection).Remove(bson.M{"_id": documentID})
 }
