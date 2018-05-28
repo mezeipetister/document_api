@@ -120,7 +120,7 @@ func (db *session) FindDocumentOne(dbName, collection string, searchQuery bson.M
 
 // FindDocumentByID ...
 func (db *session) FindDocumentByID(dbName, collection string, documentID bson.ObjectId, result interface{}) error {
-	if err := db.session.DB(dbName).C(collection).Find(&struct{ _id bson.ObjectId }{documentID}).One(result); err != nil {
+	if err := db.session.DB(dbName).C(collection).Find(bson.M{"_id": documentID}).One(result); err != nil {
 		return err
 	}
 	return nil

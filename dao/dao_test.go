@@ -57,16 +57,6 @@ func TestDAO(t *testing.T) {
 	}
 }
 
-func TestInsertNewDocument(t *testing.T) {
-	if d, err := New(testServer); err == nil {
-		defer d.CloseSession()
-		if err := d.InsertNewDocument(testDBName, testCollectionName,
-			&testDocumentToInsert); err != nil {
-			t.Error("Error while inserting a new document.")
-		}
-	}
-}
-
 func TestInsertMultipleDocuments(t *testing.T) {
 	if d, err := New(testServer); err == nil {
 		defer d.CloseSession()
@@ -75,6 +65,28 @@ func TestInsertMultipleDocuments(t *testing.T) {
 			&testDocumentStruct{bson.NewObjectId(), "Gabi", "Multiple insert test"},
 			&testDocumentStruct{bson.NewObjectId(), "Kriszti", "Multiple insert test"}); err != nil {
 			t.Errorf("Error while inserting a new documents. Error message: %s", err)
+		}
+	}
+}
+
+func TestInsertMultipleRandomDocuments(t *testing.T) {
+	if d, err := New(testServer); err == nil {
+		defer d.CloseSession()
+		if err := d.InsertNewDocuments(testDBName, testCollectionName,
+			&testDocumentStruct{bson.NewObjectId(), "A1", "Multiple insert test 1"},
+			&testDocumentStruct{bson.NewObjectId(), "A2", "Multiple insert test 2"},
+			&testDocumentStruct{bson.NewObjectId(), "A3", "Multiple insert test 3"}); err != nil {
+			t.Errorf("Error while inserting a new documents. Error message: %s", err)
+		}
+	}
+}
+
+func TestInsertNewDocument(t *testing.T) {
+	if d, err := New(testServer); err == nil {
+		defer d.CloseSession()
+		if err := d.InsertNewDocument(testDBName, testCollectionName,
+			&testDocumentToInsert); err != nil {
+			t.Error("Error while inserting a new document.")
 		}
 	}
 }
