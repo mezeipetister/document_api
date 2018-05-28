@@ -26,6 +26,7 @@ import (
 	"errors"
 
 	mgo "gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 const (
@@ -102,16 +103,16 @@ func (db *session) UpdateDocumentByID(dbName, collection, documentID string, doc
 }
 
 // FindDocumentOne ...
-func (db *session) FindDocumentOne(dbName, collection string, searchQuery, result *interface{}) error {
-	if err := db.session.DB(dbName).C(collection).Find(searchQuery).One(&result); err != nil {
+func (db *session) FindDocumentOne(dbName, collection string, searchQuery, result interface{}) error {
+	if err := db.session.DB(dbName).C(collection).Find(searchQuery).One(result); err != nil {
 		return err
 	}
 	return nil
 }
 
 // FindDocumentByID ...
-func (db *session) FindDocumentByID(dbName, collection, documentID string, result *interface{}) error {
-	if err := db.session.DB(dbName).C(collection).FindId(documentID).One(&result); err != nil {
+func (db *session) FindDocumentByID(dbName, collection string, documentID bson.ObjectId, result interface{}) error {
+	if err := db.session.DB(dbName).C(collection).FindId(documentID).One(result); err != nil {
 		return err
 	}
 	return nil

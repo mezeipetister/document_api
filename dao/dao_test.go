@@ -36,25 +36,59 @@ const (
 
 var testDocumentID = bson.NewObjectId()
 
-var testDocumentToInsert = &struct {
-	ID      bson.ObjectId `json:"_id"`
+type testDocumentStruct struct {
+	ID      bson.ObjectId `json:"id"`
+	Name    string        `json:"Name"`
 	Message string        `json:"message"`
-}{
+}
+
+var testDocumentToInsert = &testDocumentStruct{
 	ID:      testDocumentID,
+	Name:    "John DOe",
 	Message: "Hello World",
 }
 
 func TestDAO(t *testing.T) {
 	if d, err := New(testServer); err != nil {
 		defer d.CloseSession()
-		t.Error("Error while database initialize")
+		t.Error("Error while database initialize.")
 	}
 }
 
 func TestCreateDocument(t *testing.T) {
 	if d, err := New(testServer); err == nil {
+		defer d.CloseSession()
 		if err := d.InsertNewDocument(testDBName, testCollectionName, &testDocumentToInsert); err != nil {
-			t.Error("Error while inserting a new document")
+			t.Error("Error while inserting a new document.")
+		}
+	}
+}
+
+// func TestFindByID(t *testing.T) {
+// 	if d, err := New(testServer); err == nil {
+// 		defer d.CloseSession()
+// 		var result testDocumentStruct
+// 		if err := d.FindDocumentByID(testDBName, testCollectionName, testDocumentToInsert.ID, &result); err == nil {
+// 			if result.Message != testDocumentToInsert.Message {
+// 				t.Error("Found a document but not the inserted test document.")
+// 			}
+// 			return
+// 		} else {
+// 			t.Errorf("Error while finding document by ID. Error message: %s", err)
+// 		}
+// 	}
+// }
+
+func TestFindOne(t *testing.T) {
+	if d, err := New(testServer); err == nil {
+		defer d.CloseSession()
+		var result testDocumentStruct
+		if err := d.FindDocumentOne(testDBName, testCollectionName, &struct{ name string }{"John Doe"}, &result); err == nil {
+			if result.Message != testDocumentToInsert.Message {
+				t.Error("Found a document but not the inserted test document.")
+			}
+		} else {
+			t.Errorf("Error while finding document by ID. Error message: %s", err)
 		}
 	}
 }

@@ -4,6 +4,9 @@ RED="\033[1;31m"
 GREEN="\033[1;32m"
 NOCOLOR="\033[0m"
 
+# Clean go packages
+go clean
+
 # Install go packages
 go install *.go
 if [ $? -eq 0 ]; then
