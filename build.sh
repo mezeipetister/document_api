@@ -42,5 +42,8 @@ else
     exit 1
 fi
 
+# Remove debug.test files
+rm -rf */debug.test
+
 # Run application
 ./bin/app
