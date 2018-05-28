@@ -64,8 +64,6 @@ package controllers
 // }
 
 // // Login ...
-// // TODO +ADD Authentaction middleware
-// // TODO Add UID + Role Claims. Role is important!
 // func Login(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
 // 	db, err := serviceDB.New("localhost", "DEMO", "doc1")
 // 	defer db.CloseSession()

@@ -67,7 +67,6 @@ package user
 
 // // Login ...
 // func (u *Model) Login(username, password string) (string, error) {
-// 	// TODO change it!!! Just for testing purpose!!!!!!
 // 	res := User{}
 // 	u.datastore.GetSession().DB("DEMO").C("doc1").Find(bson.M{"username": "mezeipetister"}).One(&res)
 
@@ -128,6 +127,5 @@ package user
 
 // // ResetPassword ...
 // func (u *Model) ResetPassword() string {
-// 	// TODO
 // 	return ""
 // }

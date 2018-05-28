@@ -33,8 +33,6 @@ func init() {
 }
 
 func main() {
-
-	// TODO: server + router + logging + error handling
 	if db, err := dao.New(configuration.DBServerAddress); err == nil {
 		defer db.CloseSession()
 	}

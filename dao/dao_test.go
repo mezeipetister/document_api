@@ -25,6 +25,8 @@ package dao
 import (
 	"testing"
 
+	"strconv"
+
 	"gopkg.in/mgo.v2/bson"
 )
 
@@ -65,6 +67,18 @@ func TestInsertNewDocument(t *testing.T) {
 	}
 }
 
+func TestInsertMultipleDocuments(t *testing.T) {
+	if d, err := New(testServer); err == nil {
+		defer d.CloseSession()
+		if err := d.InsertNewDocuments(testDBName, testCollectionName,
+			&testDocumentStruct{bson.NewObjectId(), "Peti", "Multiple insert test"},
+			&testDocumentStruct{bson.NewObjectId(), "Gabi", "Multiple insert test"},
+			&testDocumentStruct{bson.NewObjectId(), "Kriszti", "Multiple insert test"}); err != nil {
+			t.Errorf("Error while inserting a new documents. Error message: %s", err)
+		}
+	}
+}
+
 func TestFindByID(t *testing.T) {
 	if d, err := New(testServer); err == nil {
 		defer d.CloseSession()
@@ -85,6 +99,7 @@ func TestFindOne(t *testing.T) {
 		defer d.CloseSession()
 		var result testDocumentStruct
 		if err := d.FindDocumentOne(testDBName, testCollectionName,
+			// TODO: fix the query to ...query, bcause this way now its broken.
 			&struct{ name string }{"John Doe"}, &result); err == nil {
 			if result.Message != testDocumentToInsert.Message {
 				t.Error("Found a document but not the inserted test document.")
@@ -95,14 +110,19 @@ func TestFindOne(t *testing.T) {
 	}
 }
 
-func TestInsertMultipleDocuments(t *testing.T) {
+func TestFindAll(t *testing.T) {
 	if d, err := New(testServer); err == nil {
 		defer d.CloseSession()
-		if err := d.InsertNewDocuments(testDBName, testCollectionName,
-			&testDocumentStruct{bson.NewObjectId(), "Peti", "Hello World"},
-			&testDocumentStruct{bson.NewObjectId(), "Gabi", "Hello World"},
-			&testDocumentStruct{bson.NewObjectId(), "Kriszti", "Hello World"}); err != nil {
-			t.Errorf("Error while inserting a new documents. Error message: %s", err)
+		var result []testDocumentStruct
+		if err := d.FindDocumentAll(testDBName, testCollectionName,
+			// TODO: fix the query to ...query, bcause this way now its broken.
+			&struct{ name string }{"Multiple insert test"}, &result); err == nil {
+			resultLen := len(result)
+			if resultLen != 3 {
+				t.Errorf("Found documents but not 3 but %s.", strconv.Itoa(resultLen))
+			}
+		} else {
+			t.Errorf("Error while finding document by ID. Error message: %s", err)
 		}
 	}
 }
