@@ -106,6 +106,7 @@ func TestFindByID(t *testing.T) {
 	}
 }
 
+// We expect to be at least one document with the field "name":"John Doe"
 func TestFindOne(t *testing.T) {
 	if d, err := New(testServer); err == nil {
 		defer d.CloseSession()
@@ -121,6 +122,9 @@ func TestFindOne(t *testing.T) {
 	}
 }
 
+// We expect to insert a multiple document insert test before.
+// We expect to be exactly 3 documents in the collection,
+// with the field "message":"Multiple insert test".
 func TestFindAll(t *testing.T) {
 	if d, err := New(testServer); err == nil {
 		defer d.CloseSession()
