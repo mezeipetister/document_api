@@ -69,13 +69,18 @@ func TestInsertMultipleDocuments(t *testing.T) {
 	}
 }
 
+var TD1 = &testDocumentStruct{bson.NewObjectId(), "A1", "Multiple insert test 1"}
+var TD2 = &testDocumentStruct{bson.NewObjectId(), "A2", "Multiple insert test 2"}
+var TD3 = &testDocumentStruct{bson.NewObjectId(), "A3", "Multiple insert test 3"}
+
 func TestInsertMultipleRandomDocuments(t *testing.T) {
 	if d, err := New(testServer); err == nil {
 		defer d.CloseSession()
 		if err := d.InsertNewDocuments(testDBName, testCollectionName,
-			&testDocumentStruct{bson.NewObjectId(), "A1", "Multiple insert test 1"},
-			&testDocumentStruct{bson.NewObjectId(), "A2", "Multiple insert test 2"},
-			&testDocumentStruct{bson.NewObjectId(), "A3", "Multiple insert test 3"}); err != nil {
+			TD1,
+			TD2,
+			TD3,
+		); err != nil {
 			t.Errorf("Error while inserting a new documents. Error message: %s", err)
 		}
 	}
@@ -141,6 +146,62 @@ func TestFindAll(t *testing.T) {
 	}
 }
 
+// For testing updateDocumentById we use the TD1 document, and rename it.
+func TestUpdateDocumentByID(t *testing.T) {
+	const newDocumentName = "A1.V2"
+	if d, err := New(testServer); err == nil {
+		defer d.CloseSession()
+		var dV1 testDocumentStruct
+		var dV2 testDocumentStruct
+		if err := d.FindDocumentByID(testDBName, testCollectionName, TD1.ID, &dV1); err != nil {
+			t.Errorf("Error while finding document by ID. Error message: %s", err)
+		}
+		if err := d.UpdateDocumentByID(testDBName, testCollectionName, TD1.ID,
+			bson.M{"name": newDocumentName}); err != nil {
+			t.Errorf("Error while updating document by ID. Error message: %s", err)
+		}
+		if err := d.FindDocumentByID(testDBName, testCollectionName, TD1.ID, &dV2); err != nil {
+			t.Errorf("Error while finding document by ID. Error message: %s", err)
+		}
+		if dV2.Name != newDocumentName {
+			t.Errorf("Document updated, but after checking it again, the modification not found. Before: %s, After: %s", dV1.Name, dV2.Name)
+		}
+	}
+}
+
+// For testing updateDocument we use the TD2 document, and rename it.
+func TestUpdateDocument(t *testing.T) {
+	const newDocumentName = "A2.V2"
+	if d, err := New(testServer); err == nil {
+		defer d.CloseSession()
+		var dV1 testDocumentStruct
+		var dV2 testDocumentStruct
+		if err := d.FindDocumentByID(testDBName, testCollectionName, TD2.ID, &dV1); err != nil {
+			t.Errorf("Error while finding document by ID. Error message: %s", err)
+		}
+		if err := d.UpdateDocument(testDBName, testCollectionName,
+			bson.M{"name": "A2"},
+			bson.M{"name": newDocumentName}); err != nil {
+			t.Errorf("Error while updating document by ID. Error message: %s", err)
+		}
+		if err := d.FindDocumentByID(testDBName, testCollectionName, TD2.ID, &dV2); err != nil {
+			t.Errorf("Error while finding document by ID. Error message: %s", err)
+		}
+		if dV2.Name != newDocumentName {
+			t.Errorf("Document updated, but after checking it again, the modification not found. Before: %s, After: %s", dV1.Name, dV2.Name)
+		}
+	}
+}
+
+func TestRemoveDocumentByID(t *testing.T) {
+	if d, err := New(testServer); err == nil {
+		defer d.CloseSession()
+		if err := d.RemoveDocumentByID(testDBName, testCollectionName, testDocumentToInsert.ID); err != nil {
+			t.Errorf("Error during removing a document. Error message: %s", err)
+		}
+	}
+}
+
 // Important!
 // Do not remove this test as the last one!
 // This test removes demo collection at the end of the test circle.
@@ -148,7 +209,16 @@ func TestDropCollection(t *testing.T) {
 	if d, err := New(testServer); err == nil {
 		defer d.CloseSession()
 		if err := d.RemoveCollection(testDBName, testCollectionName); err != nil {
-			t.Errorf("Error while finding document by ID. Error message: %s", err)
+			t.Errorf("Error while dropping collection. Error message: %s", err)
+		}
+	}
+}
+
+func TestDropDB(t *testing.T) {
+	if d, err := New(testServer); err == nil {
+		defer d.CloseSession()
+		if err := d.RemoveDB(testDBName); err != nil {
+			t.Errorf("Error while dropping DB. Error message: %s", err)
 		}
 	}
 }

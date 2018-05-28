@@ -86,16 +86,16 @@ func (db *session) InsertNewDocuments(dbName, collectionName string, newDocument
 	return nil
 }
 
-// RemoveDocument ...
-func (db *session) RemoveDocument(dbName, collection string, documentToRemove *interface{}) error {
-	if err := db.session.DB(dbName).C(collection).Remove(documentToRemove); err != nil {
+// RemoveDocumentById ...
+func (db *session) RemoveDocumentByID(dbName, collection string, documentIDToRemove bson.ObjectId) error {
+	if err := db.session.DB(dbName).C(collection).Remove(bson.M{"_id": documentIDToRemove}); err != nil {
 		return err
 	}
 	return nil
 }
 
 // UpdateDocument ...
-func (db *session) UpdateDocument(dbName, collection string, selector, documentToUpdate *interface{}) error {
+func (db *session) UpdateDocument(dbName, collection string, selector, documentToUpdate bson.M) error {
 	if err := db.session.DB(dbName).C(collection).Update(selector, documentToUpdate); err != nil {
 		return err
 	}
@@ -103,8 +103,8 @@ func (db *session) UpdateDocument(dbName, collection string, selector, documentT
 }
 
 // UpdateDocumentByID ...
-func (db *session) UpdateDocumentByID(dbName, collection, documentID string, documentToUpdate *interface{}) error {
-	if err := db.session.DB(dbName).C(collection).Update(documentID, documentToUpdate); err != nil {
+func (db *session) UpdateDocumentByID(dbName, collection string, documentID bson.ObjectId, documentToUpdate bson.M) error {
+	if err := db.session.DB(dbName).C(collection).Update(bson.M{"_id": documentID}, documentToUpdate); err != nil {
 		return err
 	}
 	return nil

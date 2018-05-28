@@ -24,12 +24,14 @@ package user
 
 import "golang.org/x/crypto/bcrypt"
 
-func hashPassword(password string) (string, error) {
-	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
-	return string(bytes), err
+// Generate hash from given string; using bcrypt hash generator.
+// It's a bit slow - approx. 1500ms, but it's a built-in slowlyness.
+func hashPassword(password string) ([]byte, error) {
+	return bcrypt.GenerateFromPassword([]byte(password), 14)
 }
 
-func checkPasswordHash(password, hash string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	return err == nil
+// Compare a given string - convert to hash - to a given hash.
+// It's a bit slow - approx. 1500ms, but it's a built-in slowlyness.
+func checkPasswordHash(password, hash string) error {
+	return bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 }

@@ -22,15 +22,18 @@
 
 package dao
 
+import "gopkg.in/mgo.v2/bson"
+
 type dao interface {
 	CloseSession()
 	RemoveDB(dbName string) error
 	RemoveCollection(dbName, collectionName string) error
-	IntertNewDocument(dbName, collectionName string, newDocument *interface{}) error
-	RemoveDocument(dbName, collection string, documentToRemove *interface{}) error
-	UpdateDocument(dbName, collection string, selector, documentToUpdate *interface{}) error
-	UpdateDocumentById(dbName, collection, documentID string, documentToUpdate *interface{}) error
-	FindDocumentOne(dbName, collection string, searchQuery, result *interface{}) error
-	FindDocumentByID(dbName, colelction, documentID string, result *interface{}) error
-	FindDocumentAll(dbName, collection string, searchQuery *interface{}, result []*interface{}) error
+	IntertNewDocument(dbName, collectionName string, newDocument interface{}) error
+	IntertNewDocuments(dbName, collectionName string, newDocument ...interface{}) error
+	RemoveDocument(dbName, collection string, documentToRemove interface{}) error
+	UpdateDocument(dbName, collection string, selector, documentToUpdate interface{}) error
+	UpdateDocumentById(dbName, collection, documentID string, documentToUpdate interface{}) error
+	FindDocumentOne(dbName, collection string, searchQuery bson.M, result interface{}) error
+	FindDocumentByID(dbName, colelction string, documentID bson.ObjectId, result interface{}) error
+	FindDocumentAll(dbName, collection string, searchQuery bson.M, result interface{}) error
 }
