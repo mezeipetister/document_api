@@ -37,9 +37,9 @@ const (
 var testDocumentID = bson.NewObjectId()
 
 type testDocumentStruct struct {
-	ID      bson.ObjectId `json:"id"`
-	Name    string        `json:"Name"`
-	Message string        `json:"message"`
+	ID      bson.ObjectId `json:"_id" bson:"_id"`
+	Name    string        `json:"Name" bson:"name"`
+	Message string        `json:"message" bson:"message"`
 }
 
 var testDocumentToInsert = &testDocumentStruct{
@@ -64,20 +64,19 @@ func TestCreateDocument(t *testing.T) {
 	}
 }
 
-// func TestFindByID(t *testing.T) {
-// 	if d, err := New(testServer); err == nil {
-// 		defer d.CloseSession()
-// 		var result testDocumentStruct
-// 		if err := d.FindDocumentByID(testDBName, testCollectionName, testDocumentToInsert.ID, &result); err == nil {
-// 			if result.Message != testDocumentToInsert.Message {
-// 				t.Error("Found a document but not the inserted test document.")
-// 			}
-// 			return
-// 		} else {
-// 			t.Errorf("Error while finding document by ID. Error message: %s", err)
-// 		}
-// 	}
-// }
+func TestFindByID(t *testing.T) {
+	if d, err := New(testServer); err == nil {
+		defer d.CloseSession()
+		var result testDocumentStruct
+		if err := d.FindDocumentByID(testDBName, testCollectionName, testDocumentToInsert.ID, &result); err == nil {
+			if result.Message != testDocumentToInsert.Message {
+				t.Error("Found a document but not the inserted test document.")
+			}
+		} else {
+			t.Errorf("Error while finding document by ID. Error message: %s", err)
+		}
+	}
+}
 
 func TestFindOne(t *testing.T) {
 	if d, err := New(testServer); err == nil {
@@ -89,6 +88,18 @@ func TestFindOne(t *testing.T) {
 			}
 		} else {
 			t.Errorf("Error while finding document by ID. Error message: %s", err)
+		}
+	}
+}
+
+func TestInsertMultipleDocuments(t *testing.T) {
+	if d, err := New(testServer); err == nil {
+		defer d.CloseSession()
+		if err := d.InsertNewDocuments(testDBName, testCollectionName,
+			&testDocumentStruct{bson.NewObjectId(), "Peti", "Hello World"},
+			&testDocumentStruct{bson.NewObjectId(), "Gabi", "Hello World"},
+			&testDocumentStruct{bson.NewObjectId(), "Kriszti", "Hello World"}); err != nil {
+			t.Errorf("Error while inserting a new documents. Error message: %s", err)
 		}
 	}
 }

@@ -78,6 +78,14 @@ func (db *session) InsertNewDocument(dbName, collectionName string, newDocument 
 	return nil
 }
 
+// InsertNewDocuments return a callection with its built-in methods
+func (db *session) InsertNewDocuments(dbName, collectionName string, newDocument ...interface{}) error {
+	if err := db.session.DB(dbName).C(collectionName).Insert(newDocument...); err != nil {
+		return err
+	}
+	return nil
+}
+
 // RemoveDocument ...
 func (db *session) RemoveDocument(dbName, collection string, documentToRemove *interface{}) error {
 	if err := db.session.DB(dbName).C(collection).Remove(documentToRemove); err != nil {
@@ -112,14 +120,14 @@ func (db *session) FindDocumentOne(dbName, collection string, searchQuery, resul
 
 // FindDocumentByID ...
 func (db *session) FindDocumentByID(dbName, collection string, documentID bson.ObjectId, result interface{}) error {
-	if err := db.session.DB(dbName).C(collection).FindId(documentID).One(result); err != nil {
+	if err := db.session.DB(dbName).C(collection).Find(&struct{ _id bson.ObjectId }{documentID}).One(result); err != nil {
 		return err
 	}
 	return nil
 }
 
 // FindDocumentAll ...
-func (db *session) FindDocumentAll(dbName, collection string, searchQuery *interface{}, result []*interface{}) error {
+func (db *session) FindDocumentAll(dbName, collection string, searchQuery *interface{}, result []interface{}) error {
 	if err := db.session.DB(dbName).C(collection).Find(searchQuery).All(result); err != nil {
 		return err
 	}
