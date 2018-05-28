@@ -55,10 +55,11 @@ func TestDAO(t *testing.T) {
 	}
 }
 
-func TestCreateDocument(t *testing.T) {
+func TestInsertNewDocument(t *testing.T) {
 	if d, err := New(testServer); err == nil {
 		defer d.CloseSession()
-		if err := d.InsertNewDocument(testDBName, testCollectionName, &testDocumentToInsert); err != nil {
+		if err := d.InsertNewDocument(testDBName, testCollectionName,
+			&testDocumentToInsert); err != nil {
 			t.Error("Error while inserting a new document.")
 		}
 	}
@@ -68,7 +69,8 @@ func TestFindByID(t *testing.T) {
 	if d, err := New(testServer); err == nil {
 		defer d.CloseSession()
 		var result testDocumentStruct
-		if err := d.FindDocumentByID(testDBName, testCollectionName, testDocumentToInsert.ID, &result); err == nil {
+		if err := d.FindDocumentByID(testDBName, testCollectionName,
+			testDocumentToInsert.ID, &result); err == nil {
 			if result.Message != testDocumentToInsert.Message {
 				t.Error("Found a document but not the inserted test document.")
 			}
@@ -82,7 +84,8 @@ func TestFindOne(t *testing.T) {
 	if d, err := New(testServer); err == nil {
 		defer d.CloseSession()
 		var result testDocumentStruct
-		if err := d.FindDocumentOne(testDBName, testCollectionName, &struct{ name string }{"John Doe"}, &result); err == nil {
+		if err := d.FindDocumentOne(testDBName, testCollectionName,
+			&struct{ name string }{"John Doe"}, &result); err == nil {
 			if result.Message != testDocumentToInsert.Message {
 				t.Error("Found a document but not the inserted test document.")
 			}
