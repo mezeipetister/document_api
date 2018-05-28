@@ -46,7 +46,7 @@ type testDocumentStruct struct {
 
 var testDocumentToInsert = &testDocumentStruct{
 	ID:      testDocumentID,
-	Name:    "John DOe",
+	Name:    "John Doe",
 	Message: "Hello World",
 }
 
@@ -99,8 +99,7 @@ func TestFindOne(t *testing.T) {
 		defer d.CloseSession()
 		var result testDocumentStruct
 		if err := d.FindDocumentOne(testDBName, testCollectionName,
-			// TODO: fix the query to ...query, bcause this way now its broken.
-			&struct{ name string }{"John Doe"}, &result); err == nil {
+			bson.M{"name": "John Doe"}, &result); err == nil {
 			if result.Message != testDocumentToInsert.Message {
 				t.Error("Found a document but not the inserted test document.")
 			}
@@ -115,13 +114,24 @@ func TestFindAll(t *testing.T) {
 		defer d.CloseSession()
 		var result []testDocumentStruct
 		if err := d.FindDocumentAll(testDBName, testCollectionName,
-			// TODO: fix the query to ...query, bcause this way now its broken.
-			&struct{ name string }{"Multiple insert test"}, &result); err == nil {
+			bson.M{"message": "Multiple insert test"}, &result); err == nil {
 			resultLen := len(result)
 			if resultLen != 3 {
 				t.Errorf("Found documents but not 3 but %s.", strconv.Itoa(resultLen))
 			}
 		} else {
+			t.Errorf("Error while finding document by ID. Error message: %s", err)
+		}
+	}
+}
+
+// Important!
+// Do not remove this test as the last one!
+// This test removes demo collection at the end of the test circle.
+func TestDropCollection(t *testing.T) {
+	if d, err := New(testServer); err == nil {
+		defer d.CloseSession()
+		if err := d.RemoveCollection(testDBName, testCollectionName); err != nil {
 			t.Errorf("Error while finding document by ID. Error message: %s", err)
 		}
 	}

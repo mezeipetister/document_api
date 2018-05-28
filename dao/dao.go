@@ -111,7 +111,7 @@ func (db *session) UpdateDocumentByID(dbName, collection, documentID string, doc
 }
 
 // FindDocumentOne ...
-func (db *session) FindDocumentOne(dbName, collection string, searchQuery, result interface{}) error {
+func (db *session) FindDocumentOne(dbName, collection string, searchQuery bson.M, result interface{}) error {
 	if err := db.session.DB(dbName).C(collection).Find(searchQuery).One(result); err != nil {
 		return err
 	}
@@ -127,8 +127,8 @@ func (db *session) FindDocumentByID(dbName, collection string, documentID bson.O
 }
 
 // FindDocumentAll ...
-func (db *session) FindDocumentAll(dbName, collection string, searchQuery interface{}, result interface{}) error {
-	if err := db.session.DB(dbName).C(collection).Find(bson.M{"message": "Multiple insert test"}).All(result); err != nil {
+func (db *session) FindDocumentAll(dbName, collection string, searchQuery bson.M, result interface{}) error {
+	if err := db.session.DB(dbName).C(collection).Find(searchQuery).All(result); err != nil {
 		return err
 	}
 	return nil
