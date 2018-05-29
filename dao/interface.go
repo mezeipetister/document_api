@@ -24,7 +24,8 @@ package dao
 
 import "gopkg.in/mgo.v2/bson"
 
-type dao interface {
+// DAO Interface
+type DAO interface {
 	CloseSession()
 	RemoveDB(dbName string) error
 	RemoveCollection(dbName, collectionName string) error

@@ -26,10 +26,13 @@ import (
 	"fmt"
 
 	"github.com/mezeipetister/document_api/dao"
+	"github.com/mezeipetister/document_api/settings"
 )
 
+var configuration *settings.Config
+
 func init() {
-	getConfig()
+	configuration = settings.New()
 }
 
 func main() {

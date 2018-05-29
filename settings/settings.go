@@ -20,7 +20,7 @@
  * via github.com
  */
 
-package main
+package settings
 
 import (
 	"encoding/json"
@@ -37,16 +37,48 @@ const (
 )
 
 // Config
-var configuration *config
+var configuration *Config
 
-// config members are exported
-// because this way the JSON parser can
-// manage the parsing.
-type config struct {
+// Config struct.
+type Config struct {
 	ServerAddress   string `json:"server_address"`
 	ServerPort      int    `json:"server_port"`
 	DBServerAddress string `json:"db_server_address"`
 	DBServerPort    int    `json:"db_server_port"`
+}
+
+// Interface for config.
+type Interface interface {
+	getServerAddress() string
+	getServerPort() int
+	getDBAddress() string
+	getDBPort() int
+}
+
+// New config instance.
+func New() *Config {
+	getConfig()
+	return configuration
+}
+
+// Get server address from the config.
+func (c *Config) getServerAddress() string {
+	return c.ServerAddress
+}
+
+// Get server port from the config.
+func (c *Config) getServerPort() int {
+	return c.ServerPort
+}
+
+// Get DB server address from the config.
+func (c *Config) getDBAddress() string {
+	return c.DBServerAddress
+}
+
+// Get DB server port from the config.
+func (c *Config) getDBPort() int {
+	return c.DBServerPort
 }
 
 // return the read configs
@@ -58,7 +90,7 @@ func getConfig() {
 
 		// Create default values.
 		content, _ := json.MarshalIndent(
-			&config{
+			&Config{
 				ServerAddress:   "localhost",
 				ServerPort:      8080,
 				DBServerAddress: "localhost",

@@ -20,7 +20,7 @@
  * via github.com
  */
 
-package main
+package settings
 
 import (
 	"testing"
@@ -28,12 +28,19 @@ import (
 )
 
 func TestGetConfig(t *testing.T) {
-	getConfig()
-	if unsafe.Sizeof(configuration) == 0 {
+	c := New()
+	if unsafe.Sizeof(c) == 0 {
 		t.Error("Config file is empty after initialization.")
 	}
-	if (len(configuration.ServerAddress) == 0) ||
-		(configuration.ServerPort == 0) {
+	if (len(c.getServerAddress()) == 0) ||
+		(c.getServerPort() == 0) {
 		t.Error("No server address and server port set in configuration file.")
+	}
+}
+
+func TestGetSampleSettings(t *testing.T) {
+	c := New()
+	if serverAddress := c.getServerAddress(); serverAddress != "localhost" {
+		t.Errorf("Server address is not the required in the test settings. Now: %s; expected: %s", serverAddress, "localhost")
 	}
 }
