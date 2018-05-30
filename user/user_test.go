@@ -1,5 +1,5 @@
 /*
- * Created on Sat May 26 2018
+ * Created on Wed May 30 2018
  * Copyright (c) 2018 Peter Mezei
  *
  * License AGPL v3.0
@@ -20,26 +20,30 @@
  * via github.com
  */
 
-package main
+package user
 
 import (
-	"fmt"
+	"testing"
 
 	"github.com/mezeipetister/document_api/dao"
-	"github.com/mezeipetister/document_api/settings"
 )
 
-var Hello = "Hello"
-var configuration *settings.Config
+const (
+	serverAddress  = "localhost"
+	dbName         = "DEMO"
+	collectionName = "user"
+)
 
-func init() {
-	configuration = settings.New()
-}
-
-func main() {
-	if db, err := dao.New(configuration.DBServerAddress); err == nil {
-		defer db.CloseSession()
+func TestNewUser(t *testing.T) {
+	db, _ := dao.New(serverAddress)
+	defer db.CloseSession()
+	if u1, err := New(db, dbName, collectionName); err == nil {
+		u1.SetFName("Peter")
+		u1.SetLName("Mezei")
+		u1.SetEmail("mezeipietster@gmail.com")
+		u1.Save()
+		return
+	} else {
+		t.Errorf("Error occured during inserting new test user. Error message: %s", err)
 	}
-	fmt.Println("Hello")
-	fmt.Println(configuration.ServerAddress)
 }

@@ -29,11 +29,11 @@ type DAO interface {
 	CloseSession()
 	RemoveDB(dbName string) error
 	RemoveCollection(dbName, collectionName string) error
-	IntertNewDocument(dbName, collectionName string, newDocument interface{}) error
-	IntertNewDocuments(dbName, collectionName string, newDocument ...interface{}) error
-	RemoveDocument(dbName, collection string, documentToRemove interface{}) error
-	UpdateDocument(dbName, collection string, selector, documentToUpdate interface{}) error
-	UpdateDocumentById(dbName, collection, documentID string, documentToUpdate interface{}) error
+	InsertNewDocument(dbName, collectionName string, newDocument interface{}) error
+	InsertNewDocuments(dbName, collectionName string, newDocument ...interface{}) error
+	RemoveDocumentByID(dbName, collection string, documentIDToRemove bson.ObjectId) error
+	UpdateDocument(dbName, collection string, selector, documentToUpdate bson.M) error
+	UpdateDocumentByID(dbName, collection string, documentID bson.ObjectId, documentToUpdate bson.M) error
 	FindDocumentOne(dbName, collection string, searchQuery bson.M, result interface{}) error
 	FindDocumentByID(dbName, colelction string, documentID bson.ObjectId, result interface{}) error
 	FindDocumentAll(dbName, collection string, searchQuery bson.M, result interface{}) error

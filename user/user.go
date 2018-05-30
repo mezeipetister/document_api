@@ -22,54 +22,56 @@
 
 package user
 
-// import (
-// 	"errors"
+import (
+	"github.com/mezeipetister/document_api/dao"
+	"gopkg.in/mgo.v2/bson"
+)
 
-// 	"github.com/mezeipetister/document_api/dao"
-// 	"github.com/mezeipetister/document_api/settings"
-// 	"gopkg.in/mgo.v2/bson"
-// )
+// Model represents a user document + datastore
+type Model struct {
+	document       User
+	datastore      dao.DAO
+	dbName         string
+	collectionName string
+}
 
-// // Model represents a user document + datastore
-// type Model struct {
-// 	document  User
-// 	datastore dao.DAO
-// 	settings  settings.Interface
-// }
+// User model
+type User struct {
+	ID       bson.ObjectId `bson:"_id" json:"_id"`
+	Username string        `bson:"username" json:"username"`
+	FName    string        `bson:"fname" json:"fname"`
+	LName    string        `bson:"lname" json:"lname"`
+	Email    string        `bson:"email" json:"email"`
+	Password string        `bson:"password" json:"password"`
+}
 
-// // User model
-// type User struct {
-// 	ID       bson.ObjectId `bson:"_id" json:"_id"`
-// 	Username string        `bson:"username" json:"username"`
-// 	FName    string        `bson:"fname" json:"fname"`
-// 	LName    string        `bson:"lname" json:"lname"`
-// 	Email    string        `bson:"email" json:"email"`
-// 	Password string        `bson:"password" json:"password"`
-// }
+// Interface : User Interface
+type Interface interface {
+	Save() error
+	Remove() error
+	Get() User
+	Set(User)
+	SetFName(string)
+	SetLName(string)
+	SetEmail(string)
+	SetPassword(string) error
+	ResetPassword() string
+	Login(string, string) (string, error)
+}
 
-// // Interface : User Interface
-// type Interface interface {
-// 	Save() error
-// 	Remove() error
-// 	Get() User
-// 	Set(User)
-// 	SetFName(string)
-// 	SetLName(string)
-// 	SetEmail(string)
-// 	SetPassword(string) error
-// 	ResetPassword() string
-// 	Login(string, string) (string, error)
-// }
+// New : create and return a new user
+func New(db dao.DAO, dbName, collectionName string) (Model, error) {
+	return Model{
+		datastore:      db,
+		dbName:         dbName,
+		collectionName: collectionName,
+		document:       User{ID: bson.NewObjectId()}}, nil
+}
 
-// // New : create and return a new user
-// func New(db *dao.DAO) (Model, error) {
-// 	return Model{datastore: *db}, nil
-// }
-
-// // Remove the current user document from database
-// func (u *Model) Remove() error {
-
-// }
+// Remove the current user document from database
+func (u *Model) Remove() error {
+	return u.datastore.RemoveDocumentByID(u.dbName, u.collectionName, u.document.ID)
+}
 
 // // Get back the current user document
 // func (u *Model) Get() User {
@@ -77,41 +79,35 @@ package user
 // 	return u.document
 // }
 
-// // Set a new user document to the current user object
-// func (u *Model) Set(userDocument *User) error {
-// 	u.document = *userDocument
-// 	return nil
-// }
+// Save the current user document from database
+func (u *Model) Save() error {
+	return u.datastore.InsertNewDocument(u.dbName, u.collectionName, u.document)
+}
 
-// // SetFName ...
-// func (u *Model) SetFName(fname string) {
-// 	u.document.FName = fname
-// }
+// SetFName ...
+func (u *Model) SetFName(fname string) {
+	u.document.FName = fname
+}
 
-// // SetLName ...
-// func (u *Model) SetLName(lname string) {
-// 	u.document.LName = lname
-// }
+// SetLName ...
+func (u *Model) SetLName(lname string) {
+	u.document.LName = lname
+}
 
-// // SetEmail ...
-// func (u *Model) SetEmail(email string) {
-// 	u.document.Email = email
-// }
+// SetEmail ...
+func (u *Model) SetEmail(email string) {
+	u.document.Email = email
+}
 
-// // SetPassword ...
-// func (u *Model) SetPassword(password string) error {
-// 	hash, error := hashPassword(password)
-// 	if error == nil {
-// 		u.document.Password = hash
-// 		return nil
-// 	}
-// 	return error
-// }
-
-// // ResetPassword ...
-// func (u *Model) ResetPassword() string {
-// 	return ""
-// }
+// SetPassword ...
+func (u *Model) SetPassword(password string) error {
+	hash, error := hashPassword(password)
+	if error == nil {
+		u.document.Password = string(hash)
+		return nil
+	}
+	return error
+}
 
 // // Login ...
 // func (u *Model) Login(username, password string) (string, error) {
