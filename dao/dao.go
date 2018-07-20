@@ -87,7 +87,7 @@ func (db *session) InsertNewDocuments(dbName, collectionName string, newDocument
 }
 
 // RemoveDocumentById ...
-func (db *session) RemoveDocumentByID(dbName, collection string, documentIDToRemove bson.ObjectId) error {
+func (db *session) RemoveDocumentByID(dbName, collection, documentIDToRemove string) error {
 	if err := db.session.DB(dbName).C(collection).Remove(bson.M{"_id": documentIDToRemove}); err != nil {
 		return err
 	}
@@ -95,24 +95,34 @@ func (db *session) RemoveDocumentByID(dbName, collection string, documentIDToRem
 }
 
 // UpdateDocument ...
-func (db *session) UpdateDocument(dbName, collection string, selector, documentToUpdate bson.M) error {
-	if err := db.session.DB(dbName).C(collection).Update(selector, documentToUpdate); err != nil {
+// TODO: Error handling!
+func (db *session) UpdateDocument(dbName, collection string, selector, documentToUpdate interface{}) error {
+	Selector, _ := bson.Marshal(selector)
+	DocumentToUpdate, _ := bson.Marshal(documentToUpdate)
+	if err := db.session.DB(dbName).C(collection).Update(Selector, DocumentToUpdate); err != nil {
 		return err
 	}
 	return nil
 }
 
 // UpdateDocumentByID ...
-func (db *session) UpdateDocumentByID(dbName, collection string, documentID bson.ObjectId, documentToUpdate bson.M) error {
-	if err := db.session.DB(dbName).C(collection).Update(bson.M{"_id": documentID}, documentToUpdate); err != nil {
+// TODO: Error handling!
+func (db *session) UpdateDocumentByID(dbName, collection, documentID string, documentToUpdate interface{}) error {
+	DocumentToUpdate, _ := bson.Marshal(documentToUpdate)
+	if err := db.session.DB(dbName).C(collection).Update(bson.M{"_id": documentID}, DocumentToUpdate); err != nil {
 		return err
 	}
 	return nil
 }
 
 // FindDocumentOne ...
-func (db *session) FindDocumentOne(dbName, collection string, searchQuery bson.M, result interface{}) error {
-	if err := db.session.DB(dbName).C(collection).Find(searchQuery).One(result); err != nil {
+// TODO: Error handling!
+func (db *session) FindDocumentOne(dbName, collection string, searchQuery map[string]string, result interface{}) error {
+	var SearchQuery bson.M
+	for k, v := range searchQuery {
+		SearchQuery[k] = v
+	}
+	if err := db.session.DB(dbName).C(collection).Find(SearchQuery).One(result); err != nil {
 		return err
 	}
 	return nil

@@ -156,8 +156,8 @@ func TestUpdateDocumentByID(t *testing.T) {
 		if err := d.FindDocumentByID(testDBName, testCollectionName, TD1.ID, &dV1); err != nil {
 			t.Errorf("Error while finding document by ID. Error message: %s", err)
 		}
-		if err := d.UpdateDocumentByID(testDBName, testCollectionName, TD1.ID,
-			bson.M{"name": newDocumentName}); err != nil {
+		if err := d.UpdateDocumentByID(testDBName, testCollectionName, string(TD1.ID),
+			&struct{ name string }{name: "newDocumentName"}); err != nil {
 			t.Errorf("Error while updating document by ID. Error message: %s", err)
 		}
 		if err := d.FindDocumentByID(testDBName, testCollectionName, TD1.ID, &dV2); err != nil {
@@ -196,7 +196,7 @@ func TestUpdateDocument(t *testing.T) {
 func TestRemoveDocumentByID(t *testing.T) {
 	if d, err := New(testServer); err == nil {
 		defer d.CloseSession()
-		if err := d.RemoveDocumentByID(testDBName, testCollectionName, testDocumentToInsert.ID); err != nil {
+		if err := d.RemoveDocumentByID(testDBName, testCollectionName, string(testDocumentToInsert.ID)); err != nil {
 			t.Errorf("Error during removing a document. Error message: %s", err)
 		}
 	}

@@ -68,6 +68,13 @@ func New(db dao.DAO, dbName, collectionName string) (Model, error) {
 		document:       User{ID: bson.NewObjectId()}}, nil
 }
 
+// FindUserByID find a user by ID
+func (u *Model) FindUserByID(userID string) error {
+	var user User
+	err := u.datastore.FindDocumentByID(u.dbName, u.collectionName, bson.ObjectId(userID), user)
+	return err
+}
+
 // Remove the current user document from database
 func (u *Model) Remove() error {
 	return u.datastore.RemoveDocumentByID(u.dbName, u.collectionName, u.document.ID)
@@ -81,7 +88,8 @@ func (u *Model) Remove() error {
 
 // Save the current user document from database
 func (u *Model) Save() error {
-	return u.datastore.InsertNewDocument(u.dbName, u.collectionName, u.document)
+	// d, _ := bson.Marshal(u.document)
+	return u.datastore.UpdateDocumentByID(u.dbName, u.collectionName, string(u.document.ID), u.document)
 }
 
 // SetFName ...
@@ -101,9 +109,9 @@ func (u *Model) SetEmail(email string) {
 
 // SetPassword ...
 func (u *Model) SetPassword(password string) error {
-	hash, error := hashPassword(password)
+	_, error := hashPassword(password)
 	if error == nil {
-		u.document.Password = string(hash)
+		u.document.Password = "H"
 		return nil
 	}
 	return error

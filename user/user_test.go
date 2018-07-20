@@ -26,12 +26,13 @@ import (
 	"testing"
 
 	"github.com/mezeipetister/document_api/dao"
+	"gopkg.in/mgo.v2/bson"
 )
 
 const (
 	serverAddress  = "localhost"
-	dbName         = "DEMO"
-	collectionName = "user"
+	dbName         = "DEMO2"
+	collectionName = "user2"
 )
 
 func TestNewUser(t *testing.T) {
@@ -42,8 +43,22 @@ func TestNewUser(t *testing.T) {
 		u1.SetLName("Mezei")
 		u1.SetEmail("mezeipietster@gmail.com")
 		u1.Save()
-		return
 	} else {
 		t.Errorf("Error occured during inserting new test user. Error message: %s", err)
+	}
+}
+
+type demoStruct struct {
+	name string
+	age  int
+}
+
+func TestBSON(t *testing.T) {
+	a1 := &demoStruct{
+		name: "Peti",
+		age:  29,
+	}
+	if bson, err := bson.Marshal(a1); err != nil {
+		t.Error(bson)
 	}
 }

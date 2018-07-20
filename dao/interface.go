@@ -32,8 +32,8 @@ type DAO interface {
 	InsertNewDocument(dbName, collectionName string, newDocument interface{}) error
 	InsertNewDocuments(dbName, collectionName string, newDocument ...interface{}) error
 	RemoveDocumentByID(dbName, collection string, documentIDToRemove bson.ObjectId) error
-	UpdateDocument(dbName, collection string, selector, documentToUpdate bson.M) error
-	UpdateDocumentByID(dbName, collection string, documentID bson.ObjectId, documentToUpdate bson.M) error
+	UpdateDocument(dbName, collection string, selector, documentToUpdate interface{}) error
+	UpdateDocumentByID(dbName, collection, documentID string, documentToUpdate interface{}) error
 	FindDocumentOne(dbName, collection string, searchQuery bson.M, result interface{}) error
 	FindDocumentByID(dbName, colelction string, documentID bson.ObjectId, result interface{}) error
 	FindDocumentAll(dbName, collection string, searchQuery bson.M, result interface{}) error
