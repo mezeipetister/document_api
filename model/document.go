@@ -22,6 +22,12 @@
 
 package model
 
+import (
+	"fmt"
+
+	"github.com/mezeipetister/document_api/pkg/setting"
+)
+
 // Document model
 type Document struct {
 	ID          string
@@ -39,6 +45,7 @@ type Document struct {
 
 // Remove document
 func (d *Document) Remove() error {
+	fmt.Println(setting.AppVersion)
 	return nil
 }
 

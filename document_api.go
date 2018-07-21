@@ -1,5 +1,5 @@
 /*
- * Created on Wed May 30 2018
+ * Created on Sat May 26 2018
  * Copyright (c) 2018 Peter Mezei
  *
  * License AGPL v3.0
@@ -20,45 +20,18 @@
  * via github.com
  */
 
-package user
+package main
 
 import (
-	"testing"
+	"fmt"
 
-	"github.com/mezeipetister/document_api/dao"
-	"gopkg.in/mgo.v2/bson"
+	"github.com/mezeipetister/document_api/pkg/setting"
 )
 
-const (
-	serverAddress  = "localhost"
-	dbName         = "DEMO2"
-	collectionName = "user2"
-)
+func init() {
 
-func TestNewUser(t *testing.T) {
-	db, _ := dao.New(serverAddress)
-	defer db.CloseSession()
-	if u1, err := New(db, dbName, collectionName); err == nil {
-		u1.SetFName("Peter")
-		u1.SetLName("Mezei")
-		u1.SetEmail("mezeipietster@gmail.com")
-		u1.Save()
-	} else {
-		t.Errorf("Error occured during inserting new test user. Error message: %s", err)
-	}
 }
 
-type demoStruct struct {
-	name string
-	age  int
-}
-
-func TestBSON(t *testing.T) {
-	a1 := &demoStruct{
-		name: "Peti",
-		age:  29,
-	}
-	if bson, err := bson.Marshal(a1); err != nil {
-		t.Error(bson)
-	}
+func main() {
+	fmt.Println(setting.AppVersion)
 }

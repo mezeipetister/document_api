@@ -1,5 +1,5 @@
 /*
- * Created on Sat May 26 2018
+ * Created on Sat Jul 21 2018
  * Copyright (c) 2018 Peter Mezei
  *
  * License AGPL v3.0
@@ -20,27 +20,14 @@
  * via github.com
  */
 
-package settings
+package setting
 
-import (
-	"testing"
-	"unsafe"
+const (
+	// AppVersion displayes the current version number
+	AppVersion string = "0.1.0"
 )
 
-func TestGetConfig(t *testing.T) {
-	c := New()
-	if unsafe.Sizeof(c) == 0 {
-		t.Error("Config file is empty after initialization.")
-	}
-	if (len(c.getServerAddress()) == 0) ||
-		(c.getServerPort() == 0) {
-		t.Error("No server address and server port set in configuration file.")
-	}
-}
-
-func TestGetSampleSettings(t *testing.T) {
-	c := New()
-	if serverAddress := c.getServerAddress(); serverAddress != "localhost" {
-		t.Errorf("Server address is not the required in the test settings. Now: %s; expected: %s", serverAddress, "localhost")
-	}
-}
+var (
+	// AppName to display or using in API response
+	AppName string
+)

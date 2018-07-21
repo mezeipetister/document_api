@@ -21,7 +21,7 @@ c=$(go test -p 1 ./... -v)
 if [[ $c = *"FAIL"* ]]; then
     echo -e "${RED}Test fails${NOCOLOR}"
     echo "$c"
-    rm app # Remove built app
+    rm document_api # Remove built app
     exit 1
 else
     echo -e "${GREEN}All tests passed.${NOCOLOR}"
@@ -34,7 +34,7 @@ if [ ! -d "bin" ]; then
 fi
 
 # Move App to bin folder.
-mv app bin/
+mv document_api bin/
 if [ $? -eq 0 ]; then
     echo "Application moved into the build folder."
 else
@@ -46,4 +46,4 @@ fi
 rm -rf */debug.test
 
 # Run application
-./bin/app
+./bin/document_api
