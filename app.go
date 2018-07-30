@@ -24,6 +24,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/mezeipetister/document_api/model"
 	"github.com/mezeipetister/document_api/pkg/db"
@@ -34,7 +35,8 @@ func main() {
 	defer client.Disconnect(context.Background())
 
 	d := model.NewDocument(client)
-	d.Name = "HelloBello!"
+	d.Name = "Kriszti"
+	d.Description = "Peti"
 
 	c := context.Background()
 	d.SetLog(c, "New document created")
@@ -46,7 +48,8 @@ func main() {
 	d.SetLog(c, "hellobello3")
 	d.SetLog(c, "hellobello4")
 
-	d.Remove(c)
+	result := model.FindDocument(c, client, "Kriszti")
+	fmt.Println(result.Logs[0].Message)
 
 	// time.Sleep(time.Second * 5)
 
