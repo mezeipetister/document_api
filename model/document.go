@@ -23,48 +23,39 @@
 package model
 
 import (
-	"fmt"
+	"context"
 
-	"github.com/mezeipetister/document_api/pkg/setting"
+	"github.com/mongodb/mongo-go-driver/bson/objectid"
+	"github.com/mongodb/mongo-go-driver/mongo"
 )
 
 // Document model
 type Document struct {
-	ID          string
-	Name        string
-	Description string
-	File        string
-	Folder      string
+	ID          objectid.ObjectID `bson:"_id"`
+	Name        string            `bson:"name"`
+	Description string            `bson:"description"`
+	File        string            `bson:"file"`
+	Folder      string            `bson:"folder"`
 	Partners    []Partner
-	DueDate     string
+	DueDate     string `bson:"due_date"`
 	Tasks       []Task
 	Comments    []Comment
 	Changelog   []Log
-	Status      bool
+	Status      bool `bson:"status"`
+	dbClient    *mongo.Client
 }
 
 // Remove document
-func (d *Document) Remove() error {
-	fmt.Println(setting.AppVersion)
-	return nil
+func (d *Document) Remove() {
+	d.dbClient.Database("DEMO").Collection("A").DeleteOne(context.Background(), d)
 }
 
-// SetName document
-func (d *Document) SetName(name string) error {
-	return nil
-}
-
-// SetDescription set the description of the document
-func (d *Document) SetDescription(description string) error {
-	return nil
-}
-
-// SetDueDate to the document
-func (d *Document) SetDueDate(date string) error {
-	return nil
+// Save document
+func (d *Document) Save() {
+	d.dbClient.Database("DEMO").Collection("A").InsertOne(context.Background(), d)
 }
 
 // NewDocument return a new, empty document
-func NewDocument() *Document {
-	return &Document{}
+func NewDocument(client *mongo.Client) *Document {
+	return &Document{ID: objectid.New(), dbClient: client}
 }

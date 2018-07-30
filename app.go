@@ -23,15 +23,22 @@
 package main
 
 import (
-	"fmt"
+	"context"
+	"time"
 
-	"github.com/mezeipetister/document_api/pkg/setting"
+	"github.com/mezeipetister/document_api/model"
+	"github.com/mezeipetister/document_api/pkg/db"
 )
 
-func init() {
-
-}
-
 func main() {
-	fmt.Println(setting.AppVersion)
+	client := db.NewClient()
+	defer client.Disconnect(context.Background())
+
+	d := model.NewDocument(client)
+	d.Name = "HelloBello!"
+	d.Save()
+
+	time.Sleep(time.Second * 5)
+
+	d.Remove()
 }

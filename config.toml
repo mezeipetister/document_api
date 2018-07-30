@@ -1,0 +1,7 @@
+title = "Document & Knowledge Manager"
+version = "0.1"
+
+[db]
+db_name = "DEMO"
+collection_document = "document"
+collection_user = "user"

@@ -1,5 +1,5 @@
 /*
- * Created on Sat Jul 21 2018
+ * Created on Mon Jul 30 2018
  * Copyright (c) 2018 Peter Mezei
  *
  * License AGPL v3.0
@@ -20,14 +20,24 @@
  * via github.com
  */
 
-package setting
+package db
 
-const (
-	// AppVersion displayes the current version number
-	AppVersion string = "0.1.0"
+import (
+	"context"
+	"log"
+
+	"github.com/mongodb/mongo-go-driver/mongo"
 )
 
-var (
-	// AppName to display or using in API response
-	AppName string
-)
+// NewClient returns a new MongoDB client
+func NewClient() *mongo.Client {
+	client, err := mongo.NewClient("mongodb://localhost:27017")
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = client.Connect(context.TODO())
+	if err != nil {
+		log.Fatal(err)
+	}
+	return client
+}
