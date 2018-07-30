@@ -22,7 +22,15 @@
 
 package model
 
+import (
+	"time"
+
+	"github.com/mongodb/mongo-go-driver/bson/objectid"
+)
+
 // Log model
 type Log struct {
-	ID, Message, DateCreated string
+	ID          objectid.ObjectID
+	Message     string
+	DateCreated time.Time
 }

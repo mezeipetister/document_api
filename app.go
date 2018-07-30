@@ -24,7 +24,6 @@ package main
 
 import (
 	"context"
-	"time"
 
 	"github.com/mezeipetister/document_api/model"
 	"github.com/mezeipetister/document_api/pkg/db"
@@ -36,9 +35,20 @@ func main() {
 
 	d := model.NewDocument(client)
 	d.Name = "HelloBello!"
+
+	c := context.Background()
+	d.SetLog(c, "New document created")
+
 	d.Save()
 
-	time.Sleep(time.Second * 5)
+	d.SetLog(c, "hellobello")
+	d.SetLog(c, "hellobello2")
+	d.SetLog(c, "hellobello3")
+	d.SetLog(c, "hellobello4")
 
-	d.Remove()
+	d.Remove(c)
+
+	// time.Sleep(time.Second * 5)
+
+	// d.Remove()
 }

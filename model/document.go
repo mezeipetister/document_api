@@ -24,10 +24,14 @@ package model
 
 import (
 	"context"
+	"time"
 
+	"github.com/mezeipetister/document_api/pkg/common"
 	"github.com/mongodb/mongo-go-driver/bson/objectid"
 	"github.com/mongodb/mongo-go-driver/mongo"
 )
+
+type query map[string]interface{}
 
 // Document model
 type Document struct {
@@ -40,22 +44,60 @@ type Document struct {
 	DueDate     string `bson:"due_date"`
 	Tasks       []Task
 	Comments    []Comment
-	Changelog   []Log
-	Status      bool `bson:"status"`
-	dbClient    *mongo.Client
+	Logs        []Log
+	IsRemoved   bool `bson:"is_removed"`
+	settings    *dbSettings
 }
 
-// Remove document
-func (d *Document) Remove() {
-	d.dbClient.Database("DEMO").Collection("A").DeleteOne(context.Background(), d)
-}
-
-// Save document
-func (d *Document) Save() {
-	d.dbClient.Database("DEMO").Collection("A").InsertOne(context.Background(), d)
+type dbSettings struct {
+	dbName, collectionName string
+	dbClient               *mongo.Client
 }
 
 // NewDocument return a new, empty document
 func NewDocument(client *mongo.Client) *Document {
-	return &Document{ID: objectid.New(), dbClient: client}
+	return &Document{
+		ID: objectid.New(),
+		settings: &dbSettings{
+			dbClient:       client,
+			dbName:         common.Config.DB.DBName,
+			collectionName: common.Config.DB.CollectionDocument,
+		},
+	}
+}
+
+// Remove document
+func (d *Document) Remove(ctx context.Context) {
+	d.IsRemoved = true
+	d.Update(ctx)
+}
+
+// Save document
+func (d *Document) Save() {
+	d.settings.dbClient.Database(d.settings.dbName).Collection(d.settings.collectionName).InsertOne(context.Background(), d)
+}
+
+// Update document
+func (d *Document) Update(ctx context.Context) {
+	q := make(query)
+	q["$set"] = d
+	_, err := d.settings.dbClient.Database(d.settings.dbName).Collection(d.settings.collectionName).UpdateOne(
+		ctx,
+		map[string]objectid.ObjectID{"_id": d.ID},
+		q,
+	)
+	if err != nil {
+		panic(err)
+	}
+}
+
+// SetLog insert a new log message
+func (d *Document) SetLog(ctx context.Context, msg string) {
+	newLog := &Log{
+		ID:          objectid.New(),
+		Message:     msg,
+		DateCreated: time.Now(),
+	}
+	d.Logs = append(d.Logs, *newLog)
+	d.Update(ctx)
 }
