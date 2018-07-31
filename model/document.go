@@ -41,7 +41,7 @@ type Document struct {
 	Description   string            `bson:"description"`    // Document short description what's this document is about
 	File          string            `bson:"file"`           // Attached PDF file
 	Folder        string            `bson:"folder"`         // Folder; logic manager
-	Partners      []Partner         `bson:"partners"`       // Partner list, related partners
+	Partners      []string          `bson:"partners"`       // Partner list, related partners
 	LinkedFolders []Folders         `bson:"linked_folders"` // LinkedFolders; logical relations
 	DueDate       string            `bson:"due_date"`       // DueDate; global duedate for each document; e.g. contract withdrawal time
 	Tasks         []Task            `bson:"tasks"`          // Tasdks; contains related tasks
@@ -53,34 +53,29 @@ type Document struct {
 
 // Comment model
 type Comment struct {
-	ID          objectid.ObjectID
-	Comment     string
-	DateCreated string
+	ID          objectid.ObjectID // Comment ID for identification
+	UID         objectid.ObjectID // UID => User ID
+	Comment     string            // Comment body
+	DateCreated time.Time         // DateCreated, time when the comment is created
 }
 
 // Log model
 type Log struct {
-	ID          objectid.ObjectID
-	Message     string
-	DateCreated time.Time
-}
-
-// Partner model
-type Partner struct {
-	ID          objectid.ObjectID
-	Name        string
-	Description string
-	Status      string
+	ID          objectid.ObjectID // ID for identification
+	UID         objectid.ObjectID // UID => User ID
+	Message     string            // Log message
+	DateCreated time.Time         // DateCreated, time when the log was created
 }
 
 // Task model
 type Task struct {
 	ID          objectid.ObjectID
-	Name        string
+	Owner       objectid.ObjectID // Owner => USER ID
+	Title       string
 	Description string
 	DateCreated string
 	DueDate     string
-	Status      bool
+	State       string
 }
 
 // Folders ...
@@ -153,5 +148,28 @@ func (d *Document) SetLog(ctx context.Context, msg string) {
 		DateCreated: time.Now(),
 	}
 	d.Logs = append(d.Logs, *newLog)
+	d.Update(ctx)
+}
+
+// SetComment insert a new comment
+func (d *Document) SetComment(ctx context.Context, comment string) {
+	newComment := &Comment{
+		ID:          objectid.New(),
+		Comment:     comment,
+		DateCreated: time.Now(),
+	}
+	d.Comments = append(d.Comments, *newComment)
+	d.Update(ctx)
+}
+
+// SetPartner insert a new partner
+func (d *Document) SetPartner(ctx context.Context, partnerID string) {
+	d.Partners = append(d.Partners, partnerID)
+	d.Update(ctx)
+}
+
+// SetTask insert a new TASK
+func (d *Document) SetTask(ctx context.Context, task Task) {
+	d.Tasks = append(d.Tasks, task)
 	d.Update(ctx)
 }

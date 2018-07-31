@@ -24,18 +24,21 @@ package main
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/mezeipetister/document_api/model"
 	"github.com/mezeipetister/document_api/pkg/db"
 )
+
+func Demo() string {
+	return "Demo"
+}
 
 func main() {
 	client := db.NewClient()
 	defer client.Disconnect(context.Background())
 
 	d := model.NewDocument(client)
-	d.Name = "Kriszti"
+	d.Name = "DemoDemo"
 	d.Description = "Peti"
 
 	c := context.Background()
@@ -48,10 +51,19 @@ func main() {
 	d.SetLog(c, "hellobello3")
 	d.SetLog(c, "hellobello4")
 
-	result := model.FindDocument(c, client, "Kriszti")
-	fmt.Println(result.Logs[0].Message)
+	d.SetComment(c, "First comment")
+	d.SetComment(c, "Second comment")
+	d.SetComment(c, "Third comment")
 
-	// time.Sleep(time.Second * 5)
+	d.SetPartner(c, "A")
+	d.SetPartner(c, "B")
+	d.SetPartner(c, "C")
 
-	// d.Remove()
+	t := model.Task{
+		Title: "Demo Task Title",
+	}
+	d.SetTask(c, t)
+
+	// result := model.FindDocument(c, client, "Kriszti")
+	// fmt.Println(result.Logs[0].Message)
 }
