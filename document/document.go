@@ -20,7 +20,7 @@
  * via github.com
  */
 
-package model
+package document
 
 import (
 	"context"

@@ -25,44 +25,50 @@ package main
 import (
 	"context"
 
-	"github.com/mezeipetister/document_api/model"
 	"github.com/mezeipetister/document_api/pkg/db"
+	"github.com/mezeipetister/document_api/user"
 )
 
-func Demo() string {
-	return "Demo"
-}
+// func Demo() string {
+// 	return "Demo"
+// }
 
 func main() {
+
 	client := db.NewClient()
 	defer client.Disconnect(context.Background())
 
-	d := model.NewDocument(client)
-	d.Name = "DemoDemo"
-	d.Description = "Peti"
+	u := user.NewUser(client)
+	u.Email = "mezeipetister@gmail.com"
+	u.SetPassword(context.Background(), "HelloBello!")
+	u.Save()
 
-	c := context.Background()
-	d.SetLog(c, "New document created")
+	// d := document.NewDocument(client)
+	// d.Name = "DemoDemo"
+	// d.Description = "Peti"
 
-	d.Save()
+	// c := context.Background()
+	// d.SetLog(c, "New document created")
 
-	d.SetLog(c, "hellobello")
-	d.SetLog(c, "hellobello2")
-	d.SetLog(c, "hellobello3")
-	d.SetLog(c, "hellobello4")
+	// d.Save()
 
-	d.SetComment(c, "First comment")
-	d.SetComment(c, "Second comment")
-	d.SetComment(c, "Third comment")
+	// d.SetLog(c, "hellobello")
+	// d.SetLog(c, "hellobello2")
+	// d.SetLog(c, "hellobello3")
+	// d.SetLog(c, "hellobello4")
 
-	d.SetPartner(c, "A")
-	d.SetPartner(c, "B")
-	d.SetPartner(c, "C")
+	// d.SetComment(c, "First comment")
+	// d.SetComment(c, "Second comment")
+	// d.SetComment(c, "Third comment")
 
-	t := model.Task{
-		Title: "Demo Task Title",
-	}
-	d.SetTask(c, t)
+	// d.SetPartner(c, "A")
+	// d.SetPartner(c, "B")
+	// d.SetPartner(c, "C")
+
+	// t := document.Task{
+	// 	Title: "Demo Task Title",
+	// }
+	// d.SetTask(c, t)
 
 	// result := model.FindDocument(c, client, "Kriszti")
 	// fmt.Println(result.Logs[0].Message)
