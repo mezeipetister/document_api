@@ -33,6 +33,10 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/mongodb/mongo-go-driver/bson/objectid"
+
+	"path/filepath"
+
 	"github.com/gorilla/mux"
 	"github.com/mezeipetister/document_api/document"
 	"github.com/mezeipetister/document_api/pkg/common"
@@ -114,8 +118,8 @@ func uploadDocument(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer file.Close()
-	fmt.Fprintf(w, "%v", handler.Header)
-	f, err := os.OpenFile("./public/files/"+handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
+	filePath := objectid.New().Hex() + filepath.Ext(handler.Filename)
+	f, err := os.OpenFile("./public/files/"+filePath, os.O_WRONLY|os.O_CREATE, 0666)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -123,7 +127,18 @@ func uploadDocument(w http.ResponseWriter, r *http.Request) {
 	defer f.Close()
 	io.Copy(f, file)
 
+	type result struct {
+		FileName string `json:"file_name"`
+		FilePath string `json:"file_path"`
+		FileSize int64  `json:"file_size"`
+	}
+	fmt.Println(handler.Header)
 	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(&result{
+		FileName: handler.Filename,
+		FilePath: filePath,
+		FileSize: handler.Size,
+	})
 }
 
 func main() {
