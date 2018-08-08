@@ -25,9 +25,12 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"fmt"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/gorilla/mux"
@@ -103,6 +106,26 @@ func findDocument(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(&result)
 }
 
+func uploadDocument(w http.ResponseWriter, r *http.Request) {
+	r.ParseMultipartForm(32 << 20)
+	file, handler, err := r.FormFile("uploadfile")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer file.Close()
+	fmt.Fprintf(w, "%v", handler.Header)
+	f, err := os.OpenFile("./public/files/"+handler.Filename, os.O_WRONLY|os.O_CREATE, 0666)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer f.Close()
+	io.Copy(f, file)
+
+	w.WriteHeader(http.StatusOK)
+}
+
 func main() {
 
 	r := mux.NewRouter()
@@ -110,6 +133,7 @@ func main() {
 	r.HandleFunc("/document/create", createDocument).Methods("POST")
 	r.HandleFunc("/document/get/{id}", getDocument).Methods("GET")
 	r.HandleFunc("/document/find", findDocument).Methods("POST")
+	r.HandleFunc("/document/upload", uploadDocument).Methods("POST")
 
 	port := ":" + strconv.Itoa(common.Config.Server.Port)
 	log.Fatal(http.ListenAndServe(port, r))
