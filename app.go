@@ -132,7 +132,7 @@ func uploadDocument(w http.ResponseWriter, r *http.Request) {
 		FilePath string `json:"file_path"`
 		FileSize int64  `json:"file_size"`
 	}
-	fmt.Println(handler.Header)
+
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(&result{
 		FileName: handler.Filename,
