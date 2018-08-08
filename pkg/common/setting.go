@@ -49,10 +49,15 @@ var Config *setting
 type setting struct {
 	Title, Version string
 	DB             db
+	Server         server
 }
 
 type db struct {
 	DBName             string `toml:"db_name"`
 	CollectionDocument string `toml:"collection_document"`
 	CollectionUser     string `toml:"collection_user"`
+}
+
+type server struct {
+	Port int `toml:"port"`
 }

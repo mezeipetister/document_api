@@ -36,18 +36,18 @@ type query map[string]interface{}
 
 // Document model
 type Document struct {
-	ID            objectid.ObjectID `bson:"_id"`            // Document ID
-	Name          string            `bson:"name"`           // Document name, like title
-	Description   string            `bson:"description"`    // Document short description what's this document is about
-	File          string            `bson:"file"`           // Attached PDF file
-	Folder        string            `bson:"folder"`         // Folder; logic manager
-	Partners      []string          `bson:"partners"`       // Partner list, related partners
-	LinkedFolders []Folders         `bson:"linked_folders"` // LinkedFolders; logical relations
-	DueDate       string            `bson:"due_date"`       // DueDate; global duedate for each document; e.g. contract withdrawal time
-	Tasks         []Task            `bson:"tasks"`          // Tasdks; contains related tasks
-	Comments      []Comment         `bson:"comments"`       // Comments for team discussions
-	Logs          []Log             `bson:"logs"`           // Logs contains changelog; auto generated
-	IsRemoved     bool              `bson:"is_removed"`     // IsRemoved; boolt field for logical remove; true means deleted
+	ID            string    `bson:"_id"`            // Document ID
+	Title         string    `bson:"title"`          // Document name, like title
+	Description   string    `bson:"description"`    // Document short description what's this document is about
+	File          string    `bson:"file"`           // Attached PDF file
+	Folder        string    `bson:"folder"`         // Folder; logic manager
+	Partners      []string  `bson:"partners"`       // Partner list, related partners
+	LinkedFolders []Folders `bson:"linked_folders"` // LinkedFolders; logical relations
+	DueDate       string    `bson:"due_date"`       // DueDate; global duedate for each document; e.g. contract withdrawal time
+	Tasks         []Task    `bson:"tasks"`          // Tasdks; contains related tasks
+	Comments      []Comment `bson:"comments"`       // Comments for team discussions
+	Logs          []Log     `bson:"logs"`           // Logs contains changelog; auto generated
+	IsRemoved     bool      `bson:"is_removed"`     // IsRemoved; boolt field for logical remove; true means deleted
 	settings      *dbSettings
 }
 
@@ -92,7 +92,7 @@ type dbSettings struct {
 // NewDocument return a new, empty document
 func NewDocument(client *mongo.Client) *Document {
 	return &Document{
-		ID: objectid.New(),
+		ID: objectid.New().Hex(),
 		settings: &dbSettings{
 			dbClient:       client,
 			dbName:         common.Config.DB.DBName,
@@ -105,6 +105,37 @@ func NewDocument(client *mongo.Client) *Document {
 func FindDocument(ctx context.Context, client *mongo.Client, keyword string) *Document {
 	d := NewDocument(client)
 	filter := bson.NewDocument(bson.EC.String("name", keyword))
+	err := d.settings.dbClient.Database(d.settings.dbName).Collection(d.settings.collectionName).FindOne(ctx, filter).Decode(d)
+	if err != nil {
+		panic(err)
+	}
+	return d
+}
+
+// FindDocuments ...
+func FindDocuments(ctx context.Context, client *mongo.Client, keyword string) []*Document {
+	d := NewDocument(client)
+	filter := bson.NewDocument(bson.EC.String("title", keyword))
+	cursor, err := d.settings.dbClient.Database(d.settings.dbName).Collection(d.settings.collectionName).Find(ctx, filter)
+	if err != nil {
+		panic(err)
+	}
+
+	var result []*Document
+
+	for cursor.Next(context.Background()) {
+		d := NewDocument(client)
+		cursor.Decode(d)
+		result = append(result, d)
+	}
+	return result
+}
+
+// GetDocumentByID ...
+func GetDocumentByID(ctx context.Context, client *mongo.Client, id string) *Document {
+	d := NewDocument(client)
+	filter := bson.NewDocument(bson.EC.String("_id", id))
+	// filter := map[string]string{"_id": id}
 	err := d.settings.dbClient.Database(d.settings.dbName).Collection(d.settings.collectionName).FindOne(ctx, filter).Decode(d)
 	if err != nil {
 		panic(err)
@@ -130,9 +161,10 @@ func (d *Document) Save() {
 func (d *Document) Update(ctx context.Context) {
 	q := make(query)
 	q["$set"] = d
+	oid, _ := objectid.FromHex(d.ID)
 	_, err := d.settings.dbClient.Database(d.settings.dbName).Collection(d.settings.collectionName).UpdateOne(
 		ctx,
-		map[string]objectid.ObjectID{"_id": d.ID},
+		oid,
 		q,
 	)
 	if err != nil {

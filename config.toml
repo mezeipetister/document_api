@@ -1,6 +1,9 @@
 title = "Document & Knowledge Manager"
 version = "0.1"
 
+[server]
+port = 8080
+
 [db]
 db_name = "DEMO"
 collection_document = "document"

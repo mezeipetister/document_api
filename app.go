@@ -24,24 +24,100 @@ package main
 
 import (
 	"context"
+	"encoding/json"
+	"io/ioutil"
+	"log"
+	"net/http"
+	"strconv"
 
+	"github.com/gorilla/mux"
+	"github.com/mezeipetister/document_api/document"
+	"github.com/mezeipetister/document_api/pkg/common"
 	"github.com/mezeipetister/document_api/pkg/db"
-	"github.com/mezeipetister/document_api/user"
 )
 
-// func Demo() string {
-// 	return "Demo"
-// }
+// Response template
+type Response struct {
+	Message string
+}
 
-func main() {
+func index(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(&Response{Message: "Ok!"})
+}
 
+func createDocument(w http.ResponseWriter, r *http.Request) {
 	client := db.NewClient()
 	defer client.Disconnect(context.Background())
 
-	u := user.NewUser(client)
-	u.Email = "mezeipetister@gmail.com"
-	u.SetPassword(context.Background(), "HelloBello!")
-	u.Save()
+	d := document.NewDocument(client)
+
+	// Parse the request body to a document struct
+	rbody, _ := ioutil.ReadAll(r.Body)
+	if err := json.Unmarshal(rbody, &d); err != nil {
+		panic(err)
+	}
+
+	d.Save()
+
+	w.WriteHeader(http.StatusOK)
+
+	type response struct {
+		DocumentID string `json:"document_id"`
+	}
+
+	json.NewEncoder(w).Encode(&response{DocumentID: d.ID})
+}
+
+func getDocument(w http.ResponseWriter, r *http.Request) {
+	client := db.NewClient()
+	defer client.Disconnect(context.Background())
+
+	vars := mux.Vars(r)
+	result := document.GetDocumentByID(context.Background(), client, vars["id"])
+
+	w.WriteHeader(http.StatusOK)
+
+	json.NewEncoder(w).Encode(&result)
+}
+
+func findDocument(w http.ResponseWriter, r *http.Request) {
+	client := db.NewClient()
+	defer client.Disconnect(context.Background())
+
+	type query struct {
+		Query string
+	}
+
+	q := query{}
+
+	// Parse the request body to a document struct
+	rbody, _ := ioutil.ReadAll(r.Body)
+	if err := json.Unmarshal(rbody, &q); err != nil {
+		panic(err)
+	}
+	result := document.FindDocuments(context.Background(), client, q.Query)
+
+	w.WriteHeader(http.StatusOK)
+
+	json.NewEncoder(w).Encode(&result)
+}
+
+func main() {
+
+	r := mux.NewRouter()
+	r.HandleFunc("/", index).Methods("GET")
+	r.HandleFunc("/document/create", createDocument).Methods("POST")
+	r.HandleFunc("/document/get/{id}", getDocument).Methods("GET")
+	r.HandleFunc("/document/find", findDocument).Methods("POST")
+
+	port := ":" + strconv.Itoa(common.Config.Server.Port)
+	log.Fatal(http.ListenAndServe(port, r))
+
+	// u := user.NewUser(client)
+	// u.Email = "mezeipetister@gmail.com"
+	// u.SetPassword(context.Background(), "HelloBello!")
+	// u.Save()
 
 	// d := document.NewDocument(client)
 	// d.Name = "DemoDemo"
