@@ -19,17 +19,21 @@
  * For more information please contact me
  * via github.com
  */
+#[derive(Debug)]
+pub struct Document {
+    pub id: String,
+    pub title: String,
+    pub description: String,
+    pub file: String,
+}
 
-mod document_service;
-pub mod document;
-
-extern crate protobuf;
-extern crate grpc;
-extern crate futures;
-extern crate futures_cpupool;
-
-fn main() {
-    let mut d1 = document::DocumentScheme::new();
-    d1.set_title("Hello Bello".to_string());
-    println!("{}", d1.take_title());
+impl Document {
+     pub fn new() -> Document {
+        Document {
+             id: String::from("demo"),
+             title: String::from("Demo Title"),
+             file: String::from("File path"),
+             description: String::from("demo desc.")
+        }
+     }
 }

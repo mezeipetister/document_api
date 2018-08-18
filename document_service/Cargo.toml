@@ -4,4 +4,11 @@ version = "0.1.0"
 authors = ["Peter Mezei <mezeipetister@gmail.com>"]
 
 [dependencies]
-mongodb = ""
+mongodb = "0.3.10"
+bson = "0.12.2"
+serde = "1.0.71"
+serde_derive = "1.0.71"
+grpc            = "0.5.0"
+protobuf        = "2.0.4"
+futures         = "0.1.23"
+futures-cpupool = "0.1.8"

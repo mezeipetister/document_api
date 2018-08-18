@@ -1,0 +1,19 @@
+// Document microservice proto
+
+syntax = "proto3";
+
+service SearchService {
+    rpc CreateDocument (DocumentScheme) returns (DocumentScheme);
+    rpc GetDocument (GetDocumentRequest) returns (DocumentScheme);
+  }
+
+message DocumentScheme {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  string file = 4;
+}
+
+message GetDocumentRequest {
+    string id = 1;
+}
