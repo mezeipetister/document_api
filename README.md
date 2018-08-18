@@ -1,6 +1,6 @@
 # document_api
 
-## Rust refact 
+## Rust refact
 
 > **Important**<br>
 > This program is a PROOF OF CONCEPT,<br>Use it in your own risk!!<br>
