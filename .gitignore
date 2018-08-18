@@ -1,6 +1,3 @@
-_test
-config.json
-/bin
-/public/files
-debug.test
-/demo
+/target
+**/*.rs.bk
+**/target

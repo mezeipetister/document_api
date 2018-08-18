@@ -1,0 +1,7 @@
+[package]
+name = "Document_Api"
+version = "0.1.0"
+authors = ["Peter Mezei <mezeipetister@gmail.com>"]
+description = "Demo APP, PROOF OF CONCEPT."
+
+[dependencies]
