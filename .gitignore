@@ -3,3 +3,4 @@ config.json
 /bin
 /public/files
 debug.test
+/demo

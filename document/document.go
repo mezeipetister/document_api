@@ -24,7 +24,6 @@ package document
 
 import (
 	"context"
-	"time"
 
 	"github.com/mezeipetister/document_api/pkg/common"
 	"github.com/mongodb/mongo-go-driver/bson"
@@ -36,52 +35,11 @@ type query map[string]interface{}
 
 // Document model
 type Document struct {
-	ID            string    `bson:"_id"`            // Document ID
-	Title         string    `bson:"title"`          // Document name, like title
-	Description   string    `bson:"description"`    // Document short description what's this document is about
-	File          string    `bson:"file"`           // Attached PDF file
-	Folder        string    `bson:"folder"`         // Folder; logic manager
-	Partners      []string  `bson:"partners"`       // Partner list, related partners
-	LinkedFolders []Folders `bson:"linked_folders"` // LinkedFolders; logical relations
-	DueDate       string    `bson:"due_date"`       // DueDate; global duedate for each document; e.g. contract withdrawal time
-	Tasks         []Task    `bson:"tasks"`          // Tasdks; contains related tasks
-	Comments      []Comment `bson:"comments"`       // Comments for team discussions
-	Logs          []Log     `bson:"logs"`           // Logs contains changelog; auto generated
-	IsRemoved     bool      `bson:"is_removed"`     // IsRemoved; boolt field for logical remove; true means deleted
-	settings      *dbSettings
-}
-
-// Comment model
-type Comment struct {
-	ID          objectid.ObjectID // Comment ID for identification
-	UID         objectid.ObjectID // UID => User ID
-	Comment     string            // Comment body
-	DateCreated time.Time         // DateCreated, time when the comment is created
-}
-
-// Log model
-type Log struct {
-	ID          objectid.ObjectID // ID for identification
-	UID         objectid.ObjectID // UID => User ID
-	Message     string            // Log message
-	DateCreated time.Time         // DateCreated, time when the log was created
-}
-
-// Task model
-type Task struct {
-	ID          objectid.ObjectID
-	Owner       objectid.ObjectID // Owner => USER ID
-	Title       string
-	Description string
-	DateCreated string
-	DueDate     string
-	State       string
-}
-
-// Folders ...
-type Folders struct {
-	ID   objectid.ObjectID
-	Name string
+	ID          string `bson:"_id"`         // Document ID
+	Title       string `bson:"title"`       // Document name, like title
+	Description string `bson:"description"` // Document short description what's this document is about
+	File        string `bson:"file"`        // Attached PDF file
+	settings    *dbSettings
 }
 
 type dbSettings struct {
@@ -143,12 +101,6 @@ func GetDocumentByID(ctx context.Context, client *mongo.Client, id string) *Docu
 	return d
 }
 
-// Remove document
-func (d *Document) Remove(ctx context.Context) {
-	d.IsRemoved = true
-	d.Update(ctx)
-}
-
 // Save document
 func (d *Document) Save() {
 	_, err := d.settings.dbClient.Database(d.settings.dbName).Collection(d.settings.collectionName).InsertOne(context.Background(), d)
@@ -170,38 +122,4 @@ func (d *Document) Update(ctx context.Context) {
 	if err != nil {
 		panic(err)
 	}
-}
-
-// SetLog insert a new log message
-func (d *Document) SetLog(ctx context.Context, msg string) {
-	newLog := &Log{
-		ID:          objectid.New(),
-		Message:     msg,
-		DateCreated: time.Now(),
-	}
-	d.Logs = append(d.Logs, *newLog)
-	d.Update(ctx)
-}
-
-// SetComment insert a new comment
-func (d *Document) SetComment(ctx context.Context, comment string) {
-	newComment := &Comment{
-		ID:          objectid.New(),
-		Comment:     comment,
-		DateCreated: time.Now(),
-	}
-	d.Comments = append(d.Comments, *newComment)
-	d.Update(ctx)
-}
-
-// SetPartner insert a new partner
-func (d *Document) SetPartner(ctx context.Context, partnerID string) {
-	d.Partners = append(d.Partners, partnerID)
-	d.Update(ctx)
-}
-
-// SetTask insert a new TASK
-func (d *Document) SetTask(ctx context.Context, task Task) {
-	d.Tasks = append(d.Tasks, task)
-	d.Update(ctx)
 }

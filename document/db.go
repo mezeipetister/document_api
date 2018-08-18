@@ -1,5 +1,5 @@
 /*
- * Created on Mon Jul 30 2018
+ * Created on Fri Aug 17 2018
  * Copyright (c) 2018 Peter Mezei
  *
  * License AGPL v3.0
@@ -20,7 +20,7 @@
  * via github.com
  */
 
-package db
+package document
 
 import (
 	"context"
